@@ -6,4 +6,4 @@ set(CMAKE_CXX_STANDARD 17)  # C++ standard used by the project
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add an executable target named 'my_app' to be built from the source files listed
-add_executable(my_app src/main.cpp)
+add_executable(main src/main.cpp)
