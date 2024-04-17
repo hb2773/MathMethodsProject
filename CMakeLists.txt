@@ -5,5 +5,16 @@ project(MyProject VERSION 1.0)  # Name and version of your project
 set(CMAKE_CXX_STANDARD 17)  # C++ standard used by the project
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Find Boost library components
+find_package(Boost 1.65 REQUIRED COMPONENTS date_time)  # Make sure the required date_time component is found
+
+# Include directories for Boost and local include folder
+include_directories(${Boost_INCLUDE_DIRS} include)
+
 # Add an executable target named 'my_app' to be built from the source files listed
 add_executable(main src/main.cpp)
+
+# Link the Boost libraries to the executable
+target_link_libraries(main ${Boost_LIBRARIES})
+
+
