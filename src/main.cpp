@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <chrono>
+#include <climits>
 #include "Bar.hpp"
 
 // Steps for the BackTesting Engine. 
@@ -20,12 +21,12 @@
 const int DATA_LEN = 611900;
 
 const int CHN_LEN_MIN = 500; // 500
-const int CHN_LEN_MAX = 1000; // 10000
+const int CHN_LEN_MAX = 10000; // 10000
 const int CHN_LEN_STEP = 100; // 10
 
 const double STP_PCT_MIN = 0.005; // 0.005
 const double STP_PCT_MAX = 0.10; // 0.10
-const double STP_PCT_STEP = 0.001; // 0.001
+const double STP_PCT_STEP = 0.1; // 0.001
 
 const int NUM_CHN_LEN = (int) ((CHN_LEN_MAX - CHN_LEN_MIN) / CHN_LEN_STEP) + 1;
 const int NUM_STP_PCT = (int) ((STP_PCT_MAX - STP_PCT_MIN) / STP_PCT_STEP) + 1;
@@ -33,7 +34,7 @@ const int NUM_STP_PCT = (int) ((STP_PCT_MAX - STP_PCT_MIN) / STP_PCT_STEP) + 1;
 // 3 - Pseudo code for 3. 
 std::vector<double> pseudoCodeParmaterSearch(const std::vector<Bar>& bars) {
     std::vector<double> results(NUM_CHN_LEN * NUM_STP_PCT);
-    for (int ChnLen = CHN_LEN_MIN; ChnLen < CHN_LEN_MAX; ChnLen++) {
+    for (int ChnLen = CHN_LEN_MIN; ChnLen < CHN_LEN_MAX; ChnLen += CHN_LEN_STEP) {
         for (double StpPct = STP_PCT_MIN; StpPct <= STP_PCT_MAX; StpPct += STP_PCT_STEP) {
             double curr_sum = 0.;
             for (const auto& bar : bars) {
@@ -46,19 +47,12 @@ std::vector<double> pseudoCodeParmaterSearch(const std::vector<Bar>& bars) {
     return results;
 }
 
-class BackTestEngine {
-    // This class should be able to read the data and run a backtest on windows of parameters and output 
-    // files similar to HO Optimization.xlsx for instance
-    // Will have to contain several metrics
-};
-
 // 2a - Need to handle these constants and maybe find them on Bloomberf or in the files he gave
 const double POINT_VALUE = 0.;
 const double SLPG = 70.;
 
-
 std::vector<Bar> readData(const std::string& filename) {
-    std::vector<Bar> data(DATA_LEN);
+    std::vector<Bar> data;
     std::ifstream file(filename);
     std::string line;
 
@@ -75,6 +69,8 @@ std::vector<Bar> readData(const std::string& filename) {
 int main() {
     std::string filename = "../data/HO-5minHLV.csv"; // Replace with your actual file name
 
+    std::cout << "Size of param space:" << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
+
     // Clock
     auto start = std::chrono::high_resolution_clock::now();
     auto bars = readData(filename);
@@ -83,14 +79,14 @@ int main() {
 
 
     // // Example: print the close prices
-    // for (const auto& bar : bars) {
-    //     std::cout << "Date: " << bar.timestamp << " Close: " << bar.close << std::endl;
-    // }
+    for (const auto& bar : bars) {
+        std::cout << "Date: " << bar.timestamp << " Close: " << bar.close << std::endl;
+    }
 
     // Example: print the close prices
-    for (int i = 0; i < 500; i++) {
-        std::cout << "Date: " << bars.at(i).timestamp << " Close: " << bars.at(i).close << std::endl;
-    }
+    // for (int i = 0; i < 100; i++) {
+    //     std::cout << "Date: " << bars.at(i).timestamp << " Close: " << bars.at(i).close << std::endl;
+    // }
 
     auto t1 = std::chrono::high_resolution_clock::now();
     auto results = pseudoCodeParmaterSearch(bars);
@@ -99,7 +95,8 @@ int main() {
     auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
     std::cout << "Data Read in: " << duration << " milliseconds" << std::endl;
-    std::cout << "Pseduo Strategy execution in: " << dt << " milliseconds" << std::endl;
+    std::cout << "Pseudo Strategy execution in: " << dt << " milliseconds" << std::endl;
+
 
     return 0;
 }
