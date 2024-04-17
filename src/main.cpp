@@ -9,7 +9,7 @@
 #include "BackTestEngine.hpp"
 #include "DataReader.hpp"
 #include "Bar.hpp"
-#include "constants.hpp"
+#include "Constants.hpp"
 
 // Steps for the BackTesting Engine. 
 // 1 - Read the data OK
