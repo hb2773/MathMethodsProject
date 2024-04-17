@@ -6,9 +6,6 @@
 const double POINT_VALUE = 0.;
 const double SLPG = 70.;
 
-// DATA SPECIFIC
-const int DATA_LEN = 611900;
-
 // PARAMETER SEARCH
 const int CHN_LEN_MIN = 500; // 500
 const int CHN_LEN_MAX = 10000; // 10000

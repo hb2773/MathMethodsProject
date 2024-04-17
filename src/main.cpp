@@ -21,7 +21,6 @@
 // 6 - Handle output of optimization
 
 
-
 std::vector<Bar> readData(const std::string& filename) {
     std::vector<Bar> data;
     std::ifstream file(filename);
