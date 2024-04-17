@@ -1,3 +1,6 @@
+#ifndef DATAENCODER_H
+#define DATAENCODER_H
+
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -13,3 +16,5 @@ unsigned long long encodeDateTime(const std::string& date, const std::string& ti
     // unsigned long long integer YYYYMMDDHHmm
     return test;
 }
+
+#endif

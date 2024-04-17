@@ -1,5 +1,7 @@
 #include <vector>
 
+#include "constants.hpp"
+
 // 3 - Pseudo code for 3. 
 
 // use threading and allow for explicit date start and date end.

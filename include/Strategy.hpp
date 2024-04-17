@@ -1,3 +1,6 @@
+#ifndef STRATEGY_H
+#define STRATEGY_H
+
 #include "Bar.hpp"
 class Strategy {
     public: 
@@ -25,6 +28,8 @@ class ChannelBreakout: public Strategy {
 void recordStragey(Strategy& strat) {
     // Output in a csv file : parameters of the strat, PNL, Maxdrawdown, Number of trades, Number of positives trades, (Profit / Maxdrawdown)
 }
+
+#endif
 
 
 
