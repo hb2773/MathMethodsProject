@@ -7,6 +7,7 @@
 #include <chrono>
 #include <climits>
 #include "BackTestEngine.hpp"
+#include "DataReader.hpp"
 #include "Bar.hpp"
 #include "constants.hpp"
 
@@ -21,20 +22,7 @@
 // 6 - Handle output of optimization
 
 
-std::vector<Bar> readData(const std::string& filename) {
-    std::vector<Bar> data;
-    std::ifstream file(filename);
-    std::string line;
 
-    // Skip the header line
-    std::getline(file, line);
-
-    while (std::getline(file, line)) {
-        data.emplace_back(line);
-    }
-
-    return data;
-}
 
 int main() {
     std::string filename = "../data/HO-5minHLV.csv"; // Replace with your actual file name
