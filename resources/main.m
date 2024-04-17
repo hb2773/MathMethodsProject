@@ -39,13 +39,24 @@ figure(1); clf(1); plot(d.numTime,d.Close,'b'); datetick('x');
 %return;
 
 %index for in-Sample:
-indInSample1=max(sum(d.numTime<inSample(1))+1,barsBack);
-indInSample2=max(sum(d.numTime<(inSample(2)+1)),barsBack);
+indInSample1=max(
+    sum(d.numTime < inSample(1)) + 1,
+    barsBack
+    );
+indInSample2=max(
+    sum(d.numTime < (inSample(2) + 1)),
+    barsBack
+    );
 
 %index for out-of-Sample:
-indOutSample1=max(sum(d.numTime<outSample(1))+1,barsBack);
-indOutSample2=max(sum(d.numTime<(outSample(2)+1)),barsBack);
-
+indOutSample1=max(
+    sum(d.numTime < outSample(1)) + 1,
+    barsBack
+    );
+indOutSample2=max(
+    sum(d.numTime < (outSample(2)+1)),
+    barsBack
+    );
 
 
 %calculating the statistics

@@ -3,13 +3,15 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
+#include <memory>
 #include <chrono>
 #include <climits>
+
 #include "BackTestEngine.hpp"
 #include "DataReader.hpp"
 #include "Bar.hpp"
 #include "Constants.hpp"
+#include "Strategy.hpp"
 
 // Steps for the BackTesting Engine. 
 // 1 - Read the data OK
@@ -22,24 +24,39 @@
 // 6 - Handle output of optimization
 
 
-
-
 int main() {
     std::string filename = "../data/HO-5minHLV.csv"; // Replace with your actual file name
 
     std::cout << "Size of param space:" << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
 
-    // Clock
+    // Reading the Data
     auto start = std::chrono::high_resolution_clock::now();
     auto bars = readData(filename);
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
+    // Constructing some other necessary Data
+
+    ChannelBreakout strat = ChannelBreakout(10, 0.01);
 
     // // Example: print the close prices
+    unsigned long long start_date = 2017'0101'0000;
+    unsigned long long end_date   = 2020'0101'0000;
+    int counter = 0;
+    int test_counter = 0;
     for (const auto& bar : bars) {
-        std::cout << "Date: " << bar.timestamp << " Close: " << bar.close << std::endl;
+        if (counter < BARS_BACK || bar.timestamp < start_date) {
+            // strat.initialize(bar, counter, );
+        } else if (bar.timestamp < end_date) {
+            strat.update(bar);
+            test_counter++;
+        } else {
+            break;
+        }
+        counter++;
     }
+    std::cout << counter << std::endl;
+    std::cout << test_counter << std::endl;
 
     // Example: print the close prices
     // for (int i = 0; i < 100; i++) {

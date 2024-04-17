@@ -2,9 +2,9 @@
 #define DATA_READER_H
 
 #include <vector>
-#include "Bar.hpp"
 #include <fstream>
 #include <sstream>
+#include "Bar.hpp"
 
 std::vector<Bar> readData(const std::string& filename) {
     std::vector<Bar> data;
