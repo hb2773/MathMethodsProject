@@ -14,6 +14,7 @@
 #include "Bar.hpp"
 #include "Constants.hpp"
 #include "Strategy.hpp"
+#include "utils.hpp"
 
 // Steps for the BackTesting Engine. 
 // 1 - Read the data OK
@@ -27,7 +28,9 @@
 
 
 int main() {
-    std::string filename = "../data/HO-5minHLV.csv"; // Replace with your actual file name
+
+    std::string filename = "../data/" + ASSET + ".csv"; // Replace with your actual file name
+    std::string high_low_file = "../data/" + ASSET + "_high_low.csv";
 
     std::cout << "Size of param space:" << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
 
@@ -39,51 +42,75 @@ int main() {
 
     std::map<unsigned long long, int> dates_to_indices;
     std::vector<unsigned long long> dates;
+    std::vector<double> highs;
+    std::vector<double> lows;
+
+    dates.reserve(SIZE);
+    highs.reserve(SIZE);
+    lows.reserve(SIZE);
     
     for (int i = 0; i < bars.size(); i++) {
         dates_to_indices[bars.at(i).timestamp] = i;
         dates.push_back(bars.at(i).timestamp);
+        highs.push_back(bars.at(i).high);
+        lows.push_back(bars.at(i).low);
     }
+
+    // Constructing the HIGH and LOW FILES
+    std::ofstream outHighLowFile(high_low_file);
+    if (!outHighLowFile) {
+        std::cerr << "Error opening file for writing." << std::endl;
+        return 1; // Exit if file cannot be opened
+    }
+    for (int ChnLen = 9950; ChnLen < 10000; ChnLen += CHN_LEN_STEP) {
+        auto HHs = MinMaxSlidingWindow(highs, ChnLen, true);
+        auto LLs = MinMaxSlidingWindow(lows, ChnLen, true);
+        writeVectorToCSV(outHighLowFile, HHs, ChnLen, true);
+        writeVectorToCSV(outHighLowFile, LLs, ChnLen, false);
+    }
+    outHighLowFile.close();
+
+    // Reading the HIGH files
+    // Reading the LOW  files
 
     // Constructing some other necessary Data
 
-    ChannelBreakout strat = ChannelBreakout(10000, 0.015);
+    // unsigned long long start_date = 2007'1002'0000;
+    // unsigned long long end_date   = 2023'0221'0000;
+
+    // double chnLen = 10000;
+
+    // auto HHs = MinMaxSlidingWindow(highs, chnLen, true);
+    // auto LLs = MinMaxSlidingWindow(lows,  chnLen, false);
+
+    // ChannelBreakout strat1 = ChannelBreakout(chnLen, 0.015);
+    // ChannelBreakout strat2 = ChannelBreakout(chnLen, 0.016);
+    // ChannelBreakout strat3 = ChannelBreakout(chnLen, 0.017);
+    // ChannelBreakout strat4 = ChannelBreakout(chnLen, 0.017);
+
+    // auto t1 = std::chrono::high_resolution_clock::now();
+    // StrategyEngine::run(strat1, bars, HHs, LLs, start_date, end_date);
+    // StrategyEngine::run(strat2, bars, HHs, LLs, start_date, end_date);
+    // StrategyEngine::run(strat3, bars, HHs, LLs, start_date, end_date);
+    // StrategyEngine::run(strat4, bars, HHs, LLs, start_date, end_date);
+    // auto t2 = std::chrono::high_resolution_clock::now();
+    // auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
     // // Example: print the close prices
-    unsigned long long start_date = 2007'1002'0000;
-    unsigned long long end_date   = 2023'0221'0000;
-    int counter = 0;
-    for (const auto& bar : bars) {
-        if (counter < BARS_BACK || bar.timestamp < start_date) {
-            counter++;
-            continue;
-        } else if (bar.timestamp < end_date) {
-            strat.update(bar, counter);
-            // TODO: RECORD STRATEGY
-        } else {
-            std::cout << "EQUITY       " << strat.equity - INIT_EQUITY << std::endl;
-            std::cout << "MAX DRAWDOWN " << strat.maxDrawdown          << std::endl;
-            std::cout << "NUM TRADES   " << strat.numTrades            << std::endl;
-            std::cout << "EQUITY MAX   " << strat.equityMax            << std::endl;
-            // TODO: OUTPUT IN A CSV FILE THE RESULTS OF THE STRATEGY
-            break;
-        }
-        counter++;
-    }
 
     // Example: print the close prices
     // for (int i = 0; i < 100; i++) {
     //     std::cout << "Date: " << bars.at(i).timestamp << " Close: " << bars.at(i).close << std::endl;
     // }
 
-    auto t1 = std::chrono::high_resolution_clock::now();
+    // auto t1 = std::chrono::high_resolution_clock::now();
     // auto results = pseudoCodeParmaterSearch(bars);
-    auto t2 = std::chrono::high_resolution_clock::now();
+    //auto t2 = std::chrono::high_resolution_clock::now();
 
-    auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+    // auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
     std::cout << "Data Read in: " << duration << " milliseconds" << std::endl;
-    std::cout << "Pseudo Strategy execution in: " << dt << " milliseconds" << std::endl;
+    // std::cout << "Pseudo Strategy execution in: " << dt << " milliseconds" << std::endl;
 
 
     return 0;

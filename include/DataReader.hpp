@@ -5,9 +5,11 @@
 #include <fstream>
 #include <sstream>
 #include "Bar.hpp"
+#include "Constants.hpp"
 
 std::vector<Bar> readData(const std::string& filename) {
     std::vector<Bar> data;
+    data.reserve(SIZE);
     std::ifstream file(filename);
     std::string line;
 
