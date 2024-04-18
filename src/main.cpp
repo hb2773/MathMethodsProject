@@ -7,6 +7,7 @@
 #include <chrono>
 #include <climits>
 #include <map>
+#include <span>
 
 #include "BackTestEngine.hpp"
 #include "DataReader.hpp"
@@ -37,7 +38,7 @@ int main() {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
     std::map<unsigned long long, int> dates_to_indices;
-    std::vector<int, unsigned long long> dates;
+    std::vector<unsigned long long> dates;
     
     for (int i = 0; i < bars.size(); i++) {
         dates_to_indices[bars.at(i).timestamp] = i;
@@ -52,20 +53,17 @@ int main() {
     unsigned long long start_date = 2017'0101'0000;
     unsigned long long end_date   = 2020'0101'0000;
     int counter = 0;
-    int test_counter = 0;
     for (const auto& bar : bars) {
         if (counter < BARS_BACK || bar.timestamp < start_date) {
-            // strat.initialize(bar, counter, );
+            continue;
         } else if (bar.timestamp < end_date) {
-            strat.update(bar);
-            test_counter++;
+            strat.update(bar, counter);
         } else {
             break;
         }
         counter++;
     }
     std::cout << counter << std::endl;
-    std::cout << test_counter << std::endl;
 
     // Example: print the close prices
     // for (int i = 0; i < 100; i++) {

@@ -2,7 +2,7 @@
 #define CONSTANTS_H
 
 // INITIAL WEALTH
-const double EQUITY = 200'000.;
+const double INIT_EQUITY = 200'000.;
 // BARS BACK
 const int BARS_BACK = 0; //17'001;
 
