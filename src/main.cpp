@@ -50,7 +50,7 @@ int main() {
     ChannelBreakout strat = ChannelBreakout(10000, 0.015);
 
     // // Example: print the close prices
-    unsigned long long start_date = 1985'1002'0000;
+    unsigned long long start_date = 2007'1002'0000;
     unsigned long long end_date   = 2023'0221'0000;
     int counter = 0;
     for (const auto& bar : bars) {

@@ -94,7 +94,7 @@ class ChannelBreakout: public Strategy {
                     numTrades += 0.5;
                 }
             }
-        } else if (position == 1  && ~traded) {
+        } else if (position == 1  && !traded) {
             sellShort = bar.low <= LL;
             sell = (bar.low <= benchmarkLong * (1 - StpPct));
             if (sellShort && sell) {
@@ -116,7 +116,7 @@ class ChannelBreakout: public Strategy {
                 }
             }
             benchmarkLong = std::max(bar.high, benchmarkLong);
-        } else if (position == -1  && ~traded) {
+        } else if (position == -1  && !traded) {
             buyLong = bar.high >= HH;
             buy = (bar.high >= benchmarkShort * (1. + StpPct));
             if (buyLong && buy) {
@@ -137,7 +137,7 @@ class ChannelBreakout: public Strategy {
                     numTrades += 1;
                 }
             }
-        } else if (position == 0 && ~traded) {
+        } else if (position == 0 && !traded) {
 
         } else if (position == 1  &&  traded) {
 
