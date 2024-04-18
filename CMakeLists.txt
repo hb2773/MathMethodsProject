@@ -14,7 +14,7 @@ include_directories(${Boost_INCLUDE_DIRS} include)
 # Add an executable target named 'my_app' to be built from the source files listed
 add_executable(main src/main.cpp)
 
-add_executable(main2 src/main2.cpp)
+# add_executable(main2 src/main2.cpp)
 
 # Link the Boost libraries to the executable
 target_link_libraries(main ${Boost_LIBRARIES})

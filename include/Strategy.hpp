@@ -29,11 +29,11 @@ class ChannelBreakout: public Strategy {
     double HH;
     double LL;
 
-    double delta;
+    double delta = 0.;
     double prevClose;
 
-    bool buy;
-    bool sell;
+    bool buy = false;
+    bool sell = false;
 
     double benchmarkLong;
     double benchmarkShort;
