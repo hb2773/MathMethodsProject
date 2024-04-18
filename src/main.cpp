@@ -6,6 +6,7 @@
 #include <memory>
 #include <chrono>
 #include <climits>
+#include <map>
 
 #include "BackTestEngine.hpp"
 #include "DataReader.hpp"
@@ -34,6 +35,14 @@ int main() {
     auto bars = readData(filename);
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    std::map<unsigned long long, int> dates_to_indices;
+    std::vector<int, unsigned long long> dates;
+    
+    for (int i = 0; i < bars.size(); i++) {
+        dates_to_indices[bars.at(i).timestamp] = i;
+        dates.push_back(bars.at(i).timestamp);
+    }
 
     // Constructing some other necessary Data
 
