@@ -47,23 +47,30 @@ int main() {
 
     // Constructing some other necessary Data
 
-    ChannelBreakout strat = ChannelBreakout(10, 0.01);
+    ChannelBreakout strat = ChannelBreakout(10000, 0.015);
 
     // // Example: print the close prices
-    unsigned long long start_date = 2017'0101'0000;
-    unsigned long long end_date   = 2020'0101'0000;
+    unsigned long long start_date = 2007'1002'0000;
+    unsigned long long end_date   = 2023'0221'0000;
     int counter = 0;
     for (const auto& bar : bars) {
         if (counter < BARS_BACK || bar.timestamp < start_date) {
+            counter++;
             continue;
         } else if (bar.timestamp < end_date) {
             strat.update(bar, counter);
+            // TODO: RECORD STRATEGY
         } else {
+            std::cout << std::endl;
+            std::cout << "EQUITY       " << strat.equity - INIT_EQUITY << std::endl;
+            std::cout << "MAX DRAWDOWN " << strat.maxDrawdown          << std::endl;
+            std::cout << "NUM TRADES   " << strat.numTrades            << std::endl;
+            std::cout << "EQUITY MAX   " << strat.equityMax            << std::endl;
+            // TODO: OUTPUT IN A CSV FILE THE RESULTS OF THE STRATEGY
             break;
         }
         counter++;
     }
-    std::cout << counter << std::endl;
 
     // Example: print the close prices
     // for (int i = 0; i < 100; i++) {
@@ -71,7 +78,7 @@ int main() {
     // }
 
     auto t1 = std::chrono::high_resolution_clock::now();
-    auto results = pseudoCodeParmaterSearch(bars);
+    // auto results = pseudoCodeParmaterSearch(bars);
     auto t2 = std::chrono::high_resolution_clock::now();
 
     auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();

@@ -71,7 +71,7 @@ class ChannelBreakout: public Strategy {
         delta = POINT_VALUE * (bar.close - prevClose) * position;
         
         if (position == 0) {
-            std::cout << "Date: " << bar.timestamp << " Close: " << bar.close << std::endl;
+            // std::cout << "Date: " << bar.timestamp << " Close: " << bar.close << std::endl;
 
             buy = bar.high >= HH;
             sell = bar.low >= LL;
