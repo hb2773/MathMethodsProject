@@ -57,18 +57,8 @@ int main() {
     }
 
     // Constructing the HIGH and LOW FILES
-    std::ofstream outHighLowFile(high_low_file);
-    if (!outHighLowFile) {
-        std::cerr << "Error opening file for writing." << std::endl;
-        return 1; // Exit if file cannot be opened
-    }
-    for (int ChnLen = 9950; ChnLen < 10000; ChnLen += CHN_LEN_STEP) {
-        auto HHs = MinMaxSlidingWindow(highs, ChnLen, true);
-        auto LLs = MinMaxSlidingWindow(lows, ChnLen, true);
-        writeVectorToCSV(outHighLowFile, HHs, ChnLen, true);
-        writeVectorToCSV(outHighLowFile, LLs, ChnLen, false);
-    }
-    outHighLowFile.close();
+    // constructHHLLFile(high_low_file, 9900, 10000, 10, highs, lows);
+    constructHHLLFile(high_low_file, 100, 200, 10, highs, lows);
 
     // Reading the HIGH files
     // Reading the LOW  files

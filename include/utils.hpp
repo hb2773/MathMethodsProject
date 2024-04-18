@@ -47,4 +47,19 @@ void writeVectorToCSV(std::ofstream& outFile, const std::vector<T>& vec, const i
     outFile << "\n";
 }
 
+void constructHHLLFile(std::string& high_low_file, int cmin, int cmax, int step, std::vector<double> highs, std::vector<double> lows) {
+    std::ofstream outHighLowFile(high_low_file);
+    if (!outHighLowFile) {
+        std::cerr << "Error opening file for writing." << std::endl;
+        return; // Exit if file cannot be opened
+    }
+    for (int ChnLen = cmin; ChnLen < cmax; ChnLen += step) {
+        auto HHs = MinMaxSlidingWindow(highs, ChnLen, true);
+        auto LLs = MinMaxSlidingWindow(lows, ChnLen, true);
+        writeVectorToCSV(outHighLowFile, HHs, ChnLen, true);
+        writeVectorToCSV(outHighLowFile, LLs, ChnLen, false);
+    }
+    outHighLowFile.close();
+}
+
 #endif

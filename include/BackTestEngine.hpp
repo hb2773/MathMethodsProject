@@ -6,7 +6,9 @@
 // 3 - Pseudo code for 3. 
 // use threading and allow for explicit date start and date end.
 // std::vector<double> pseudoCodeParmaterSearch(const std::vector<Bar>& bars, long long int start_date, long long int end_date) {
-std::vector<double> pseudoCodeParmaterSearch(const std::vector<Bar>& bars) {
+
+class BackTestEngine {
+    static std::vector<double> run(const std::vector<Bar>& bars) {
     std::vector<double> results(NUM_CHN_LEN * NUM_STP_PCT);
     for (int ChnLen = CHN_LEN_MIN; ChnLen < CHN_LEN_MAX; ChnLen += CHN_LEN_STEP) {
         for (double StpPct = STP_PCT_MIN; StpPct <= STP_PCT_MAX; StpPct += STP_PCT_STEP) {
@@ -23,4 +25,4 @@ std::vector<double> pseudoCodeParmaterSearch(const std::vector<Bar>& bars) {
         }
     }
     return results;
-}
+};
