@@ -50,6 +50,30 @@ void writeVectorToCSV(std::ofstream& outFile, const std::vector<T>& vec, const i
     outFile << "\n";
 }
 
+void writeResultsToCSV(const std::string& filename, const std::vector<std::vector<double>>& data) {
+    std::ofstream outFile(filename);
+
+    // Check if file is open
+    if (!outFile.is_open()) {
+        std::cerr << "Failed to open file for writing.\n";
+        return;
+    }
+
+    // Writing header
+    outFile << "Chnlen,StpPct,Equity,EquityMax,MaxDrawdown,NumTrades,numPositiveTrades,DeltaMean,DeltaSum2_C,DeltaSum3_C\n"; 
+
+    // Writing data
+    for (const auto& row : data) {
+        for (size_t i = 0; i < row.size(); ++i) {
+            outFile << row[i];
+            if (i != row.size() - 1) outFile << ",";
+        }
+        outFile << "\n";
+    }
+
+    outFile.close();
+}
+
 void constructHHLLFile(std::string& high_low_file, int cmin, int cmax, int step, std::vector<double> highs, std::vector<double> lows) {
     std::ofstream outHighLowFile(high_low_file);
     if (!outHighLowFile) {

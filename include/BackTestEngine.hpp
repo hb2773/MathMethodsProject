@@ -1,5 +1,6 @@
 #include <vector>
 #include <thread>
+#include <mutex>
 
 #include "Constants.hpp"
 #include "Bar.hpp"
@@ -15,6 +16,9 @@
 class BackTestEngine {
     public:
     static void run(
+        const double NUM_CONTRACTS,
+        const double POINT_VALUE, 
+        const double SLPG,
         const std::vector<Bar>& bars,
         const std::vector<double>& highs,
         const std::vector<double>& lows,
@@ -28,6 +32,9 @@ class BackTestEngine {
         unsigned long long end_date
         ) 
     {
+        std::mutex mtx;
+        std::vector<std::vector<double>> results;
+
         int totalChnLenSteps = std::ceil((ChnLenMax - ChnLenMin) / ChnLenStep) + 1;
 
         // Number of threads
@@ -41,8 +48,9 @@ class BackTestEngine {
                 auto HHs = MinMaxSlidingWindow(highs, ChnLen, true);
                 auto LLs = MinMaxSlidingWindow(lows, ChnLen, false);
                 for (double StpPct = StpPctMin; StpPct <= StpPctMax; StpPct += StpPctStep) {
-                    ChannelBreakout strat = ChannelBreakout(ChnLen, StpPct);
+                    ChannelBreakout strat = ChannelBreakout(NUM_CONTRACTS, POINT_VALUE, SLPG, ChnLen, StpPct);
                     StrategyEngine::run(strat, bars, HHs, LLs, start_date, end_date);
+                    recordStrategy(strat, results, mtx);
                 }
             }
         };
@@ -61,5 +69,8 @@ class BackTestEngine {
         for (auto& thread : threads) {
             thread.join();
         }
+        
+        writeResultsToCSV("../output/results.csv", results);
+
     }
 };

@@ -9,7 +9,6 @@
 
 std::vector<Bar> readData(const std::string& filename) {
     std::vector<Bar> data;
-    data.reserve(SIZE);
     std::ifstream file(filename);
     std::string line;
 

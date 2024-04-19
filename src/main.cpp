@@ -25,14 +25,38 @@
 // 4 - Choose another market to run optimization 
 // 5 - Run optimization on the whole dataset and compare values 
 // 6 - Handle output of optimization
+// 7 - Propose a different way than full search optimization.
+// 8 - Propose other metrics
 
 
 int main() {
 
+    // ASSET /////////////////////////////////////////////////////
+    const std::string ASSET = "HO-5minHLV";
+    // SIZE 
+    const int SIZE = 611'839;
+
+    const double NUM_CONTRACTS = 1.; 
+    const double POINT_VALUE = 64'000.;
+    const double SLPG = 65.;
+
+
     std::string filename = "../data/" + ASSET + ".csv"; // Replace with your actual file name
     std::string high_low_file = "../data/" + ASSET + "_high_low.csv";
 
+    const int CHN_LEN_MIN = 10000; // 500
+    const int CHN_LEN_MAX = 10000; // 10000
+    const int CHN_LEN_STEP = 1000; // 10
+
+    const double STP_PCT_MIN = 0.015; // 0.005
+    const double STP_PCT_MAX = 0.018; // 0.10
+    const double STP_PCT_STEP = 0.001; // 0.001
+
+    const int NUM_CHN_LEN = (int) ((CHN_LEN_MAX - CHN_LEN_MIN) / CHN_LEN_STEP) + 1;
+    const int NUM_STP_PCT = (int) ((STP_PCT_MAX - STP_PCT_MIN) / STP_PCT_STEP) + 1;
+
     std::cout << "Size of param space:" << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
+    // ASSET /////////////////////////////////////////////////////
 
     // Reading the Data
     auto start = std::chrono::high_resolution_clock::now();
@@ -55,21 +79,17 @@ int main() {
         highs.push_back(bars.at(i).high);
         lows.push_back(bars.at(i).low);
     }
-
-    // Constructing the HIGH and LOW FILES
-    // constructHHLLFile(high_low_file, 9900, 10000, 10, highs, lows);
-    // constructHHLLFile(high_low_file, 100, 200, 10, highs, lows);
-
-    // Reading the HIGH files
-    // Reading the LOW  files
-
-    // Constructing some other necessary Data
-
+    // Need to do a for auto start_date
     unsigned long long start_date = 2007'1002'0000;
-    unsigned long long end_date   = 2023'0221'0000;
+    unsigned long long end_date   = 2017'1002'0000;
 
     auto t1 = std::chrono::high_resolution_clock::now();
-    BackTestEngine::run(bars, highs, lows, 9950, 10000, 10, 0.005, 0.016, 0.001, start_date, end_date);
+    BackTestEngine::run(
+        NUM_CONTRACTS, POINT_VALUE, SLPG, 
+        bars, highs, lows, 
+        CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, 
+        STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, 
+        start_date, end_date);
     auto t2 = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
@@ -100,7 +120,8 @@ int main() {
     // auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
     std::cout << "Data Read in: " << duration << " milliseconds" << std::endl;
-    std::cout << "Back Test Strategy execution in: " << dt << " milliseconds" << std::endl;
+    std::cout << "Back Test Strategy for: " << NUM_CHN_LEN * NUM_STP_PCT << "params" << std::endl;
+    std::cout << "Execution in: " << dt << " milliseconds" << std::endl;
 
     return 0;
 }
