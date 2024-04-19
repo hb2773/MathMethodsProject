@@ -1,20 +1,23 @@
 #ifndef UTILS_H
 #define UTILS_H 
 
+#include <fstream>
 #include <vector>
 #include <set>
 #include <functional>
 #include <queue>
+#include <iostream>
 
 template<typename Comparator>
 std::vector<double> SlidingWindowImpl(const std::vector<double>& arr, int k, Comparator comp) {
     std::vector<double> ans;
     std::set<std::pair<double, int>, Comparator> st(comp);
 
-    for (int i = 0; i < k; i++) {
+    for (int i = 0; i < k - 1; i++) {
         st.insert({arr[i], i});
         ans.push_back(-1.);
     }
+    st.insert({arr[k-1], k-1});
     ans.push_back(st.begin()->first);
 
     for (int i = k; i < arr.size(); i++) {
@@ -61,5 +64,7 @@ void constructHHLLFile(std::string& high_low_file, int cmin, int cmax, int step,
     }
     outHighLowFile.close();
 }
+
+
 
 #endif

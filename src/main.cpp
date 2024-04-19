@@ -58,20 +58,20 @@ int main() {
 
     // Constructing the HIGH and LOW FILES
     // constructHHLLFile(high_low_file, 9900, 10000, 10, highs, lows);
-    constructHHLLFile(high_low_file, 100, 200, 10, highs, lows);
+    // constructHHLLFile(high_low_file, 100, 200, 10, highs, lows);
 
     // Reading the HIGH files
     // Reading the LOW  files
 
     // Constructing some other necessary Data
 
-    // unsigned long long start_date = 2007'1002'0000;
-    // unsigned long long end_date   = 2023'0221'0000;
+    unsigned long long start_date = 2007'1002'0000;
+    unsigned long long end_date   = 2023'0221'0000;
 
-    // double chnLen = 10000;
-
-    // auto HHs = MinMaxSlidingWindow(highs, chnLen, true);
-    // auto LLs = MinMaxSlidingWindow(lows,  chnLen, false);
+    auto t1 = std::chrono::high_resolution_clock::now();
+    BackTestEngine::run(bars, high_low_file, 0.015, 0.015, 0.001, start_date, end_date);
+    auto t2 = std::chrono::high_resolution_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
     // ChannelBreakout strat1 = ChannelBreakout(chnLen, 0.015);
     // ChannelBreakout strat2 = ChannelBreakout(chnLen, 0.016);
@@ -100,8 +100,7 @@ int main() {
     // auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
     std::cout << "Data Read in: " << duration << " milliseconds" << std::endl;
-    // std::cout << "Pseudo Strategy execution in: " << dt << " milliseconds" << std::endl;
-
+    std::cout << "Back Test Strategy execution in: " << dt << " milliseconds" << std::endl;
 
     return 0;
 }

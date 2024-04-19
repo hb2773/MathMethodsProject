@@ -170,7 +170,7 @@ class ChannelBreakout {
 
 class StrategyEngine {
     public:
-    static void run(ChannelBreakout& strat, std::vector<Bar>& bars, std::vector<double> HHs, std::vector<double> LLs, unsigned long long start_date, unsigned long long end_date) {
+    static void run(ChannelBreakout& strat, const std::vector<Bar>& bars, std::vector<double> HHs, std::vector<double> LLs, unsigned long long start_date, unsigned long long end_date) {
         int counter = -1;
         for (const auto& bar : bars) {
             counter++;
