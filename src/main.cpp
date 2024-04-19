@@ -69,7 +69,7 @@ int main() {
     unsigned long long end_date   = 2023'0221'0000;
 
     auto t1 = std::chrono::high_resolution_clock::now();
-    BackTestEngine::run(bars, high_low_file, 0.015, 0.015, 0.001, start_date, end_date);
+    BackTestEngine::run(bars, highs, lows, 9950, 10000, 10, 0.005, 0.016, 0.001, start_date, end_date);
     auto t2 = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 

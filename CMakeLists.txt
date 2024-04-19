@@ -16,7 +16,7 @@ add_executable(main src/main.cpp)
 
 # add_executable(main2 src/main2.cpp)
 
-add_executable(main3 src/servectest.cpp)
+# add_executable(main3 src/servectest.cpp)
 
 # Link the Boost libraries to the executable
 target_link_libraries(main ${Boost_LIBRARIES})

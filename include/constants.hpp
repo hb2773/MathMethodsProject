@@ -26,7 +26,7 @@ const int CHN_LEN_STEP = 10; // 10
 
 const double STP_PCT_MIN = 0.005; // 0.005
 const double STP_PCT_MAX = 0.10; // 0.10
-const double STP_PCT_STEP = 0.1; // 0.001
+const double STP_PCT_STEP = 0.001; // 0.001
 
 const int NUM_CHN_LEN = (int) ((CHN_LEN_MAX - CHN_LEN_MIN) / CHN_LEN_STEP) + 1;
 const int NUM_STP_PCT = (int) ((STP_PCT_MAX - STP_PCT_MIN) / STP_PCT_STEP) + 1;
