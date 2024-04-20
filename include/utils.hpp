@@ -60,7 +60,7 @@ void writeResultsToCSV(const std::string& filename, const std::vector<std::vecto
     }
 
     // Writing header
-    outFile << "Chnlen,StpPct,Equity,EquityMax,MaxDrawdown,NumTrades,numPositiveTrades,DeltaMean,DeltaSum2_C,DeltaSum3_C\n"; 
+    outFile << "Chnlen,StpPct,Equity,EquityMax,MaxDrawdown,NumTrades,numPositiveTrades,DeltaMean,DeltaSum2_C,DeltaSum3_C,Var,Std,Skew\n"; 
 
     // Writing data
     for (const auto& row : data) {
