@@ -254,9 +254,15 @@ void recordStrategy(ChannelBreakout& strat, std::vector<std::vector<double>>& re
     // Output in a csv file : parameters of the strat, PNL, Maxdrawdown, Number of trades, Number of positives trades, (Profit / Maxdrawdown)
     // Have two possibilities, record the P&L or do not record the P&L curve. However still current P&L should be recorded.
     std::lock_guard<std::mutex> lock(mtx);
+
+    double var  = (1. / strat.n) * strat.deltaSum2_C;
+    double std_ = std::sqrt(var);
+    double skew = strat.n * (strat.deltaSum3_C / std::pow (strat.deltaSum2_C, 1.5));
+
     results.push_back( { 
         (double) strat.ChnLen, 
         strat.StpPct, 
+        (double) strat.n,
         strat.equity, 
         strat.equityMax, 
         strat.maxDrawdown, 
@@ -265,9 +271,11 @@ void recordStrategy(ChannelBreakout& strat, std::vector<std::vector<double>>& re
         strat.deltaMean,
         strat.deltaSum2_C, 
         strat.deltaSum3_C,
+        var,
+        std_,
+        skew
         } );
 }
-
 #endif
 
 
