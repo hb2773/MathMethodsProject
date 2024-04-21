@@ -59,11 +59,11 @@ int main () {
         lows.push_back(bars.at(i).low);
     }
 
-    unsigned long long start_date = 1985'1002'0000;
-    unsigned long long end_date   = 2017'1002'0000;
+    const unsigned long long start_date = 1985'1001'0000;
+    const unsigned long long end_date   = 2017'1001'0000;
 
-    int in_sample_years = 4;
-    int out_sample_months = 1;
+    const int in_sample_years = 4;
+    const int out_sample_months = 1;
 
     auto t1 = std::chrono::high_resolution_clock::now();
     TimeWindowEngine::run(
@@ -72,9 +72,11 @@ int main () {
         NUM_CONTRACTS, POINT_VALUE, SLPG, 
         bars, highs, lows, 
         CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, 
-        STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, 
+        STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP 
         );
     auto t2 = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+
+    std::cout << "Execution in: " << dt << " milliseconds" << std::endl;
 
 }

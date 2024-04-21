@@ -12,7 +12,7 @@ PV=64000;
 
 % 11500 0.019
 % 12700 0.01
-Length=10:100:10;
+Length=10:1000:10000;
 StopPct=0.015:0.001:0.018;
 
 resultLabel={'Profit','WorstDrawDown','StDev','#trades'};
@@ -35,7 +35,7 @@ d.numTime=datenum(d.Date)+d.numTime-floor(d.numTime);
 d.N=length(d.numTime);
 d.M=5;
 
-figure(1); clf(1); plot(d.numTime,d.Close,'b'); datetick('x');
+% figure(1); clf(1); plot(d.numTime,d.Close,'b'); datetick('x');
 %return;
 
 %index for in-Sample:
@@ -79,6 +79,7 @@ for i=1:length(Length)
         
         %running through the time and trading:
         for k=(barsBack+1):length(d.numTime)
+        % for k=indInSample1:length(d.numTime)
             traded=false;
             delta=PV*(d.Close(k)-d.Close(k-1))*position;
             

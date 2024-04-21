@@ -12,13 +12,14 @@ find_package(Boost 1.65 REQUIRED COMPONENTS date_time)  # Make sure the required
 include_directories(${Boost_INCLUDE_DIRS} include)
 
 # Add an executable target named 'my_app' to be built from the source files listed
+
 add_executable(main src/main.cpp)
 
 # add_executable(main2 src/main2.cpp)
 
 # add_executable(main3 src/servectest.cpp)
 
-# Link the Boost libraries to the executable
-target_link_libraries(main ${Boost_LIBRARIES})
+# add_executable(insampleconstructiontest src/insampleconstructiontest.cpp)
+
 
 

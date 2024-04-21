@@ -49,7 +49,7 @@ int main() {
     const int CHN_LEN_STEP = 1000; // 10
 
     const double STP_PCT_MIN = 0.015; // 0.005
-    const double STP_PCT_MAX = 0.018; // 0.10
+    const double STP_PCT_MAX = 0.019; // 0.10
     const double STP_PCT_STEP = 0.001; // 0.001
 
     const int NUM_CHN_LEN = (int) ((CHN_LEN_MAX - CHN_LEN_MIN) / CHN_LEN_STEP) + 1;

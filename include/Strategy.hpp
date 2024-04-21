@@ -39,21 +39,22 @@ class ChannelBreakout {
 
     // DELTA AND DELTA STATS
     double delta; // OK
-    double deltaMean; // NEW
-    double deltaSum2_C; // NEW
-    double deltaSum3_C; // NEW
+    double deltaMean; // OK
+    double deltaSum2_C; // OK
+    double deltaSum3_C; // OK
 
     double HH;
     double LL;
 
-    bool buy = false;
-    bool sell = false;
+    bool buy;
+    bool sell;
 
     double benchmarkLong;
     double benchmarkShort;
 
-    bool sellShort;
     bool buyLong;
+    bool sellShort;
+    
 
     std::queue<std::pair<double, int>> lastHs;
     std::queue<std::pair<double, int>> lastLs;
@@ -65,12 +66,13 @@ class ChannelBreakout {
         position(0.),
         traded(false),
         n(0),
+        prevClose(0.),
 
-        ChnLen(ChnLen), 
-        StpPct(StpPct), 
         NUM_CONTRACTS(NUM_CONTRACTS), 
         POINT_VALUE(POINT_VALUE), 
         SLPG(SLPG),
+        ChnLen(ChnLen), 
+        StpPct(StpPct), 
 
         equity(INIT_EQUITY),
         equityMax(INIT_EQUITY),
@@ -82,14 +84,20 @@ class ChannelBreakout {
         maxDrawdown(0.),
 
         delta(0.), 
+        deltaMean(0.),
+        deltaSum2_C(0.),
+        deltaSum3_C(0.),
+        
 
-        prevClose(0.),
         buy(false), 
         sell(false), 
         benchmarkLong(0.), 
         benchmarkShort(0.),
-        sellShort(0.),
-        buyLong(0.) {};
+
+        buyLong(false), 
+        sellShort(false)
+        
+        {};
 
     void update(const Bar& bar, double HH, double LL, const int counter) {
 
@@ -122,7 +130,7 @@ class ChannelBreakout {
             sell = (bar.low <= LL);
 
             if (buy && sell) {
-                delta = -SLPG + POINT_VALUE * (LL - HH);
+                delta = - SLPG + POINT_VALUE * (LL - HH);
                 numTrades += 1.;
                 if (delta > 0) numPositiveTrades += 1.;
             } else {
@@ -164,7 +172,7 @@ class ChannelBreakout {
                     position = -1;
                     benchmarkShort = bar.low;
                     numTrades += 1.;
-                    if (delta > 0) numPositiveTrades += 0.5;
+                    if (delta > 0) numPositiveTrades += 1.;
                 }
             }
             benchmarkLong = std::max(bar.high, benchmarkLong);
@@ -172,7 +180,7 @@ class ChannelBreakout {
             buyLong = bar.high >= HH;
             buy = (bar.high >= benchmarkShort * (1. + StpPct));
             if (buyLong && buy) {
-                delta -= SLPG + 2. * POINT_VALUE * (bar.close - HH);
+                delta += - SLPG + 2. * POINT_VALUE * (bar.close - HH);
                 position = 1;
                 benchmarkLong = bar.high;
                 numTrades += 1.;
@@ -189,9 +197,10 @@ class ChannelBreakout {
                     position = 1;
                     benchmarkLong = bar.high;
                     numTrades += 1.;
-                    if (delta > 0) numPositiveTrades += 0.5;
+                    if (delta > 0) numPositiveTrades += 1.;
                 }
             }
+            benchmarkShort = std::min(bar.low, benchmarkShort);
         } else if (position == 0 && !traded) {
 
         } else if (position == 1  &&  traded) {
@@ -213,8 +222,8 @@ class ChannelBreakout {
         double deviation_n = deviation / n;
         double term1 = deviation * deviation_n * (n - 1);
         deltaMean += deviation / n;
-        deltaSum2_C += term1;
         deltaSum3_C += term1 * deviation_n * (n - 2) - 3 * deviation_n * deltaSum2_C;
+        deltaSum2_C += term1;
         // State UPDATE
         prevClose = bar.close;
         return;
