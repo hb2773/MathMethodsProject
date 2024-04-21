@@ -32,6 +32,8 @@ class ChannelBreakout {
     // TRADES
     double numTrades; // OK
     double numPositiveTrades; // OK
+    double avgWinner;
+    double avgLooser;
     
     // DRAWDOWNS
     double drawdown; // OK
@@ -79,6 +81,8 @@ class ChannelBreakout {
 
         numTrades(0.),
         numPositiveTrades(0.),
+        avgWinner(0.),
+        avgLooser(0.),
 
         drawdown(0.),
         maxDrawdown(0.),
@@ -132,7 +136,10 @@ class ChannelBreakout {
             if (buy && sell) {
                 delta = - SLPG + POINT_VALUE * (LL - HH);
                 numTrades += 1.;
-                if (delta > 0) numPositiveTrades += 1.;
+                if (delta > 0.) {
+                    numPositiveTrades += 1.;
+                    avgWinner += delta / (2 * numPositiveTrades);
+                }
             } else {
                 if (buy) {
                     delta = - SLPG / 2. + POINT_VALUE * (bar.close - HH);
@@ -140,7 +147,12 @@ class ChannelBreakout {
                     traded = true;
                     benchmarkLong = bar.high;
                     numTrades += 0.5;
-                    if (delta > 0) numPositiveTrades += 0.5;
+                    if (delta > 0.) {
+                        numPositiveTrades += 0.5; 
+                        avgWinner += delta / (2 * numPositiveTrades);
+                    } else {
+                        avgLooser += delta / (2 * numPositiveTrades);
+                    }
                 }
                 if (sell) {
                     delta = - SLPG / 2. - POINT_VALUE * (bar.close - LL);
@@ -148,7 +160,12 @@ class ChannelBreakout {
                     traded = true;
                     benchmarkShort = bar.low;
                     numTrades += 0.5;
-                    if (delta > 0) numPositiveTrades += 0.5;
+                    if (delta > 0.) {
+                        numPositiveTrades += 0.5;
+                        avgWinner += delta / (2 * numPositiveTrades);
+                    } else {
+                        avgLooser += delta / (2 * numPositiveTrades);
+                    }
                 }
             }
         } else if (position == 1  && !traded) {
@@ -159,20 +176,35 @@ class ChannelBreakout {
                 position = -1;
                 benchmarkShort = bar.low;
                 numTrades += 1.;
-                if (delta > 0) numPositiveTrades += 1.;
+                if (delta > 0.) {
+                    numPositiveTrades += 1.;
+                    avgWinner += delta / (2 * numPositiveTrades);
+                } else {
+                    avgLooser += delta / (2 * numPositiveTrades);
+                }
             } else {
                 if (sell) {
                     delta += - SLPG / 2. - POINT_VALUE * (bar.close - benchmarkLong * (1. - StpPct));
                     position = 0;
                     numTrades += 0.5;
-                    if (delta > 0) numPositiveTrades += 0.5;
+                    if (delta > 0.) {
+                        numPositiveTrades += 0.5;
+                        avgWinner += delta / (2 * numPositiveTrades);
+                    } else {
+                        avgLooser += delta / (2 * numPositiveTrades);
+                    }
                 }
                 if (sellShort) {
                     delta += - SLPG - 2. * POINT_VALUE * (bar.close - LL);
                     position = -1;
                     benchmarkShort = bar.low;
                     numTrades += 1.;
-                    if (delta > 0) numPositiveTrades += 1.;
+                    if (delta > 0.) {
+                        numPositiveTrades += 1.;
+                        avgWinner += delta / (2 * numPositiveTrades);
+                    } else {
+                        avgLooser += delta / (2 * numPositiveTrades);
+                    }
                 }
             }
             benchmarkLong = std::max(bar.high, benchmarkLong);
@@ -184,20 +216,35 @@ class ChannelBreakout {
                 position = 1;
                 benchmarkLong = bar.high;
                 numTrades += 1.;
-                if (delta > 0) numPositiveTrades += 1.;
+                if (delta > 0.) {
+                    numPositiveTrades += 1.;
+                    avgWinner += delta / (2 * numPositiveTrades);
+                } else {
+                    avgLooser += delta / (2 * numPositiveTrades);
+                }
             } else {
                 if (buy) {
                     delta += - SLPG / 2. + POINT_VALUE * (bar.close - benchmarkShort * (1. + StpPct));
                     position = 0;
                     numTrades += .5;
-                    if (delta > 0) numPositiveTrades += 0.5;
+                    if (delta > 0.) {
+                        numPositiveTrades += 0.5;
+                        avgWinner += delta / (2 * numPositiveTrades);
+                    } else {
+
+                    }
                 }
                 if (buyLong) {
                     delta += - SLPG + 2. * POINT_VALUE * (bar.close - HH);
                     position = 1;
                     benchmarkLong = bar.high;
                     numTrades += 1.;
-                    if (delta > 0) numPositiveTrades += 1.;
+                    if (delta > 0.) { 
+                        numPositiveTrades += 1.;
+                        avgWinner += delta / (2 * numPositiveTrades); 
+                    } else {
+                        avgLooser += delta / (2 * numPositiveTrades);
+                    }
                 }
             }
             benchmarkShort = std::min(bar.low, benchmarkShort);
@@ -224,6 +271,7 @@ class ChannelBreakout {
         deltaMean += deviation / n;
         deltaSum3_C += term1 * deviation_n * (n - 2) - 3 * deviation_n * deltaSum2_C;
         deltaSum2_C += term1;
+
         // State UPDATE
         prevClose = bar.close;
         return;
@@ -264,9 +312,12 @@ void recordStrategy(ChannelBreakout& strat, std::vector<std::vector<double>>& re
     // Have two possibilities, record the P&L or do not record the P&L curve. However still current P&L should be recorded.
     std::lock_guard<std::mutex> lock(mtx);
 
+    double pctPosTrades = strat.numPositiveTrades / strat.numTrades;
+
     double var  = (1. / strat.n) * strat.deltaSum2_C;
     double std_ = std::sqrt(var);
     double skew = strat.n * (strat.deltaSum3_C / std::pow (strat.deltaSum2_C, 1.5));
+
 
     results.push_back( { 
         (double) strat.ChnLen, 
@@ -277,6 +328,9 @@ void recordStrategy(ChannelBreakout& strat, std::vector<std::vector<double>>& re
         strat.maxDrawdown, 
         strat.numTrades, 
         strat.numPositiveTrades,
+        pctPosTrades,
+        strat.avgWinner,
+        strat.avgLooser,
         strat.deltaMean,
         strat.deltaSum2_C, 
         strat.deltaSum3_C,
