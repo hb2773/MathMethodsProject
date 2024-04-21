@@ -29,7 +29,8 @@ class BackTestEngine {
         double StpPctMax, 
         double StpPctStep, 
         unsigned long long start_date, 
-        unsigned long long end_date
+        unsigned long long end_date,
+        bool recordStrat = false
         ) 
     {
         std::mutex mtx;
@@ -49,7 +50,7 @@ class BackTestEngine {
                 auto LLs = MinMaxSlidingWindow(lows, ChnLen, false);
                 for (double StpPct = StpPctMin; StpPct <= StpPctMax; StpPct += StpPctStep) {
                     ChannelBreakout strat = ChannelBreakout(NUM_CONTRACTS, POINT_VALUE, SLPG, ChnLen, StpPct);
-                    StrategyEngine::run(strat, bars, HHs, LLs, start_date, end_date);
+                    StrategyEngine::run(strat, bars, HHs, LLs, start_date, end_date, recordStrat);
                     recordStrategy(strat, results, mtx);
                 }
             }
