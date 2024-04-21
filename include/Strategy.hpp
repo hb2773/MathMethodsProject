@@ -44,6 +44,7 @@ class ChannelBreakout {
     double deltaMean; // OK
     double deltaSum2_C; // OK
     double deltaSum3_C; // OK
+    double deltaSum4_C;
 
     double HH;
     double LL;
@@ -91,8 +92,8 @@ class ChannelBreakout {
         deltaMean(0.),
         deltaSum2_C(0.),
         deltaSum3_C(0.),
+        deltaSum4_C(0.),
         
-
         buy(false), 
         sell(false), 
         benchmarkLong(0.), 
@@ -139,6 +140,8 @@ class ChannelBreakout {
                 if (delta > 0.) {
                     numPositiveTrades += 1.;
                     avgWinner += delta / (2 * numPositiveTrades);
+                } else {
+                    avgLooser += delta / (2 * (numTrades - numPositiveTrades));
                 }
             } else {
                 if (buy) {
@@ -151,7 +154,7 @@ class ChannelBreakout {
                         numPositiveTrades += 0.5; 
                         avgWinner += delta / (2 * numPositiveTrades);
                     } else {
-                        avgLooser += delta / (2 * numPositiveTrades);
+                        avgLooser += delta / (2 * (numTrades - numPositiveTrades));
                     }
                 }
                 if (sell) {
@@ -164,7 +167,7 @@ class ChannelBreakout {
                         numPositiveTrades += 0.5;
                         avgWinner += delta / (2 * numPositiveTrades);
                     } else {
-                        avgLooser += delta / (2 * numPositiveTrades);
+                        avgLooser += delta / (2 * (numTrades - numPositiveTrades));
                     }
                 }
             }
@@ -180,7 +183,7 @@ class ChannelBreakout {
                     numPositiveTrades += 1.;
                     avgWinner += delta / (2 * numPositiveTrades);
                 } else {
-                    avgLooser += delta / (2 * numPositiveTrades);
+                    avgLooser += delta / (2 * (numTrades - numPositiveTrades));
                 }
             } else {
                 if (sell) {
@@ -191,7 +194,7 @@ class ChannelBreakout {
                         numPositiveTrades += 0.5;
                         avgWinner += delta / (2 * numPositiveTrades);
                     } else {
-                        avgLooser += delta / (2 * numPositiveTrades);
+                        avgLooser += delta / (2 * (numTrades - numPositiveTrades));
                     }
                 }
                 if (sellShort) {
@@ -203,7 +206,7 @@ class ChannelBreakout {
                         numPositiveTrades += 1.;
                         avgWinner += delta / (2 * numPositiveTrades);
                     } else {
-                        avgLooser += delta / (2 * numPositiveTrades);
+                        avgLooser += delta / (2 * (numTrades - numPositiveTrades));
                     }
                 }
             }
@@ -220,7 +223,7 @@ class ChannelBreakout {
                     numPositiveTrades += 1.;
                     avgWinner += delta / (2 * numPositiveTrades);
                 } else {
-                    avgLooser += delta / (2 * numPositiveTrades);
+                    avgLooser += delta / (2 * (numTrades - numPositiveTrades));
                 }
             } else {
                 if (buy) {
@@ -231,7 +234,7 @@ class ChannelBreakout {
                         numPositiveTrades += 0.5;
                         avgWinner += delta / (2 * numPositiveTrades);
                     } else {
-
+                        avgLooser += delta / (2 * (numTrades - numPositiveTrades));
                     }
                 }
                 if (buyLong) {
@@ -243,7 +246,7 @@ class ChannelBreakout {
                         numPositiveTrades += 1.;
                         avgWinner += delta / (2 * numPositiveTrades); 
                     } else {
-                        avgLooser += delta / (2 * numPositiveTrades);
+                        avgLooser += delta / (2 * (numTrades - numPositiveTrades));
                     }
                 }
             }
@@ -267,8 +270,10 @@ class ChannelBreakout {
         // Delta Stat UPDATE
         double deviation = delta - deltaMean;
         double deviation_n = deviation / n;
+        double deviation_n2 = deviation_n * deviation_n;
         double term1 = deviation * deviation_n * (n - 1);
         deltaMean += deviation / n;
+        deltaSum4_C += term1 * deviation_n2 * (n*n - 3*n + 3) + 6 * deviation_n2 * deltaSum2_C - 4 * deviation_n * deltaSum3_C;
         deltaSum3_C += term1 * deviation_n * (n - 2) - 3 * deviation_n * deltaSum2_C;
         deltaSum2_C += term1;
 
@@ -317,6 +322,7 @@ void recordStrategy(ChannelBreakout& strat, std::vector<std::vector<double>>& re
     double var  = (1. / strat.n) * strat.deltaSum2_C;
     double std_ = std::sqrt(var);
     double skew = strat.n * (strat.deltaSum3_C / std::pow (strat.deltaSum2_C, 1.5));
+    double xkurt = strat.n * (strat.deltaSum4_C / std::pow(strat.deltaSum2_C, 2.0)) - 3.;
 
 
     results.push_back( { 
@@ -334,9 +340,11 @@ void recordStrategy(ChannelBreakout& strat, std::vector<std::vector<double>>& re
         strat.deltaMean,
         strat.deltaSum2_C, 
         strat.deltaSum3_C,
+        strat.deltaSum4_C,
         var,
         std_,
-        skew
+        skew,
+        xkurt
         } );
 }
 #endif
