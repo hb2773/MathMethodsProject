@@ -17,4 +17,21 @@ unsigned long long encodeDateTime(const std::string& date, const std::string& ti
     return test;
 }
 
+unsigned long long incrementDate(unsigned long long date, int addYears, int addMonths) {
+    int year = date / 1'00'00'00'00;
+    int month = (date / 1'00'00'00) % 1'00;
+    int day = (date / 1'00'00) % 1'00;
+    int hour = (date / 1'00) % 1'00;
+    int minute = date % 1'00;
+
+    year += addYears;
+    int month_temp = month + addMonths;
+    year += month_temp / 12;
+    month = month_temp % 12;
+
+    unsigned long long newDate = year * 1'00'00'00'00ULL + month * 1'00'00'00 + day * 1'00'00 + hour * 1'00 + minute;
+    return newDate;
+}
+
+
 #endif

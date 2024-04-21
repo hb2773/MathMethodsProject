@@ -58,24 +58,26 @@ int main() {
     std::cout << "Size of param space:" << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
     // ASSET /////////////////////////////////////////////////////
 
+
+    //std::map<unsigned long long, int> dates_to_indices;
+    // std::vector<unsigned long long> dates;
+
+    // dates_to_indices[bars.at(i).timestamp] = i;
+    // dates.push_back(bars.at(i).timestamp);
+
     // Reading the Data
     auto start = std::chrono::high_resolution_clock::now();
     auto bars = readData(filename);
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
-    std::map<unsigned long long, int> dates_to_indices;
-    std::vector<unsigned long long> dates;
     std::vector<double> highs;
     std::vector<double> lows;
 
-    dates.reserve(SIZE);
     highs.reserve(SIZE);
     lows.reserve(SIZE);
     
     for (int i = 0; i < bars.size(); i++) {
-        dates_to_indices[bars.at(i).timestamp] = i;
-        dates.push_back(bars.at(i).timestamp);
         highs.push_back(bars.at(i).high);
         lows.push_back(bars.at(i).low);
     }
