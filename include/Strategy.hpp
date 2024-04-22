@@ -4,8 +4,10 @@
 #include <set>
 #include <queue>
 #include <functional>
+#include "utils.hpp"
 #include "Bar.hpp"
 #include "Constants.hpp"
+
 
 class ChannelBreakout {
     public: 
@@ -117,30 +119,11 @@ class ChannelBreakout {
     }    
     void update(const Bar& bar, double HH, double LL, const int counter) {
 
-        // setLastHs.insert({bar.high, counter});
-        // lastHs.push({bar.high, counter});
-        // setLastLs.insert({bar.low,  counter});
-        // lastLs.push({bar.low, counter});
-
-        // if (lastHs.size() <= ChnLen) {
-        //     prevClose = bar.close;
-        //     return;
-        // } else {
-        //     setLastHs.erase(lastHs.front());
-        //     setLastLs.erase(lastLs.front());
-        //     lastHs.pop();
-        //     lastLs.pop();
-        // }
-
-        // HH = setLastHs.begin()->first;
-        // LL = setLastLs.begin()->first;
-
         n += 1;
         traded = false;
         delta = POINT_VALUE * (bar.close - prevClose) * position;
         
         if (position == 0) {
-            // std::cout << "Date: " << bar.timestamp << " Close: " << bar.close << std::endl;
 
             buy = (bar.high >= HH);
             sell = (bar.low <= LL);
@@ -246,6 +229,13 @@ class ChannelBreakout {
 
 class StrategyEngine {
     public:
+
+    static void recordStrategy(const ChannelBreakout& strat, std::vector<std::vector<double>>& results);
+
+    static void recordStrategyEquity(const ChannelBreakout& strat, const Bar& bar, std::vector<std::vector<double>>& results);
+
+    static void recordStrategyEquity(const ChannelBreakout& strat, std::vector<std::vector<double>>& results);
+
     static void run(
         ChannelBreakout& strat, 
         const std::vector<Bar>& bars, 
@@ -263,7 +253,7 @@ class StrategyEngine {
             } else if (bar.timestamp < end_date) {
                 strat.update(bar, HHs.at(counter), LLs.at(counter), counter);
                 if (recordStrat) {
-                    recordStrategy(strat, stratResults);
+                    recordStrategyEquity(strat, bar, stratResults);
                 }
             } else {
                 std::cout << std::endl;
@@ -280,10 +270,32 @@ class StrategyEngine {
             }
             
         }
+        if (recordStrat) {
+            writeStratEquityResultsToCSV("../output/results2.csv", stratResults);
+        }
     }
+
+
 }; 
 
-void recordStrategy(ChannelBreakout& strat, std::vector<std::vector<double>>& results) {
+void StrategyEngine::recordStrategyEquity(const ChannelBreakout& strat, const Bar& bar, std::vector<std::vector<double>>& results) {
+
+    results.push_back( { 
+        (double) (bar.timestamp / 1'00'00'00'00),
+        (double) ((bar.timestamp / 1'00'00'00) % 1'00),
+        (double) ((bar.timestamp / 1'00'00) % 1'00),
+        (double) ((bar.timestamp / 1'00) % 1'00),
+        (double) ((bar.timestamp % 1'00)),
+        (double) strat.ChnLen, 
+        strat.StpPct, 
+        (double) strat.n,
+        strat.equity, 
+        strat.drawdown,
+        (double) strat.position
+    } );
+}
+
+void StrategyEngine::recordStrategy(const ChannelBreakout& strat, std::vector<std::vector<double>>& results) {
     double pctPosTrades = strat.numPositiveTrades / strat.numTrades;
 
     double var  = (1. / strat.n) * strat.deltaSum2_C;
@@ -312,12 +324,12 @@ void recordStrategy(ChannelBreakout& strat, std::vector<std::vector<double>>& re
         std_,
         skew,
         xkurt
-        } );
+    } );
 }
 
-void recordStrategy(ChannelBreakout& strat, std::vector<std::vector<double>>& results, std::mutex& mtx) {
+void recordStrategy(const ChannelBreakout& strat, std::vector<std::vector<double>>& results, std::mutex& mtx) {
     std::lock_guard<std::mutex> lock(mtx);
-    recordStrategy(strat, results);
+    StrategyEngine::recordStrategy(strat, results);
 }
 #endif
 
