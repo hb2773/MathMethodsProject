@@ -48,12 +48,12 @@ int main() {
     const int CHN_LEN_MAX = 10000; // 10000
     const int CHN_LEN_STEP = 1000; // 10
 
-    const double STP_PCT_MIN = 0.002; // 0.005
-    const double STP_PCT_MAX = 0.002; // 0.10
-    const double STP_PCT_STEP = 0.001; // 0.001
+    const double STP_PCT_MIN = 0.005; // 0.005
+    const double STP_PCT_MAX = 0.10;  // 0.10
+    const double STP_PCT_STEP = 0.01; // 0.001
 
-    const int NUM_CHN_LEN = (int) ((CHN_LEN_MAX - CHN_LEN_MIN) / CHN_LEN_STEP) + 1;
-    const int NUM_STP_PCT = (int) ((STP_PCT_MAX - STP_PCT_MIN) / STP_PCT_STEP) + 1;
+    const int NUM_CHN_LEN = static_cast<int>(std::ceil((CHN_LEN_MAX - CHN_LEN_MIN) / CHN_LEN_STEP)) + 1;
+    const int NUM_STP_PCT = static_cast<int>(std::ceil((STP_PCT_MAX - STP_PCT_MIN) / STP_PCT_STEP)) + 1;
 
     std::cout << "Size of param space:" << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
     // ASSET /////////////////////////////////////////////////////

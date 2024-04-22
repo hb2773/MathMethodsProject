@@ -252,7 +252,7 @@ class StrategyEngine {
             if (counter < BARS_BACK || bar.timestamp < start_date) {
                 continue;
             } else if (bar.timestamp < end_date) {
-                strat.update(bar, HHs.at(counter), LLs.at(counter), counter);
+                strat.update(bar, HHs.at(counter - 1), LLs.at(counter - 1), counter);
                 if (recordStrat) {
                     recordStrategyEquity(strat, bar, stratResults);
                 }
@@ -275,7 +275,6 @@ class StrategyEngine {
             writeStratEquityResultsToCSV(outputFile, stratResults);
         }
     }
-
 
 }; 
 

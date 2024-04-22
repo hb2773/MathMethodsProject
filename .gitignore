@@ -4,3 +4,5 @@ build/**
 **.asv
 **insample**.csv
 **outsample**.csv
+**.DS_Store**
+**.dat
