@@ -27,9 +27,11 @@ class TimeWindowEngine {
         double ChnLenMin,
         double ChnLenMax,
         double ChnLenStep,
+        int NumChnLen,
         double StpPctMin, 
         double StpPctMax, 
-        double StpPctStep 
+        double StpPctStep, 
+        int NumStpPct
         ) 
     {
         unsigned long long in_sample_start = start_date;
@@ -70,8 +72,8 @@ class TimeWindowEngine {
             auto [optiChn, optiStp] = BackTestEngine::run(
                 NUM_CONTRACTS, POINT_VALUE, SLPG,
                 bars, highs, lows,
-                ChnLenMin, ChnLenMax, ChnLenStep,
-                StpPctMin, StpPctMax, StpPctStep,
+                ChnLenMin, ChnLenMax, ChnLenStep, NumChnLen,
+                StpPctMin, StpPctMax, StpPctStep, NumStpPct,
                 start_date, end_date, 
                 false, inSampleFileName);
 

@@ -31,9 +31,11 @@ class BackTestEngine {
         double ChnLenMin,
         double ChnLenMax,
         double ChnLenStep,
+        int NumChnLen,
         double StpPctMin, 
         double StpPctMax, 
         double StpPctStep, 
+        int NumStpPct,
         unsigned long long start_date, 
         unsigned long long end_date,
         bool recordStrat = false,
@@ -42,11 +44,9 @@ class BackTestEngine {
         std::mutex mtx;
         std::vector<std::vector<double>> results;
 
-        int numChnLen = std::ceil((ChnLenMax - ChnLenMin) / ChnLenStep) + 1;
-
         const int num_threads = 4;
         std::vector<std::thread> threads;
-        int workload_per_thread = numChnLen / num_threads;
+        int workload_per_thread = NumChnLen / num_threads;
 
         auto processRange = [&](int startRange, int endRange) {
             for (int i = startRange; i < endRange; ++i) {
@@ -64,7 +64,7 @@ class BackTestEngine {
         // Distribute the workload to each thread
         for (int i = 0; i < num_threads; ++i) {
             int startRange = i * workload_per_thread;
-            int endRange = (i + 1 == num_threads) ? numChnLen : startRange + workload_per_thread;
+            int endRange = (i + 1 == num_threads) ? NumChnLen : startRange + workload_per_thread;
             threads.emplace_back(processRange, startRange, endRange);
         }
 

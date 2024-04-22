@@ -91,8 +91,8 @@ int main() {
     BackTestEngine::run(
         NUM_CONTRACTS, POINT_VALUE, SLPG, 
         bars, highs, lows, 
-        CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, 
-        STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, 
+        CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, NUM_CHN_LEN,
+        STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, NUM_STP_PCT,
         start_date, end_date,
         recordStrat);
     auto t2 = std::chrono::high_resolution_clock::now();
