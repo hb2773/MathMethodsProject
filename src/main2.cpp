@@ -5,12 +5,12 @@
 int main() {
     std::cout << "Hello World" << std::endl;
 
-    std::queue<std::pair<double, int>> lastHs;
-    std::queue<std::pair<double, int>> lastLs;
-    std::set<std::pair<double, int>, std::greater<std::pair<double, int>>> setLastHs;
-    std::set<std::pair<double, int>, std::less<std::pair<double, int>>> setLastLs;
+    std::queue<std::pair<float, int>> lastHs;
+    std::queue<std::pair<float, int>> lastLs;
+    std::set<std::pair<float, int>, std::greater<std::pair<float, int>>> setLastHs;
+    std::set<std::pair<float, int>, std::less<std::pair<float, int>>> setLastLs;
     
-    std::vector<double> v {1., 2., 5., 109., 2., -1., -490., 23, 1., -1.};
+    std::vector<float> v {1.f, 2.f, 5.f, 109.f, 2.f, -1.f, -490.f, 23.f, 1.f, -1.f};
     int k = 3;
 
     for (int i = 0; i < v.size(); i++) {

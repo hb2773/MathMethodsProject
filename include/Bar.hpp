@@ -6,10 +6,10 @@
 struct Bar {
 
     unsigned long long timestamp = 0; 
-    double open = 0.0;           // Default to 0.0
-    double high = 0.0;           // Default to 0.0
-    double low = 0.0;            // Default to 0.0
-    double close = 0.0;          // Default to 0.0
+    float open = 0.f;           // Default to 0.0
+    float high = 0.f;           // Default to 0.0
+    float low = 0.f;            // Default to 0.0
+    float close = 0.f;          // Default to 0.0
     int volume = 0;              // Default to 0
 
     Bar() = default;             // Default constructor

@@ -5,7 +5,7 @@
 
 
 // INITIAL WEALTH
-const double INIT_EQUITY = 200'000.;
+const float INIT_EQUITY = 200'000.f;
 // BARS BACK
 const int BARS_BACK = 17'001; //17'001;
 

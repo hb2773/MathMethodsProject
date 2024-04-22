@@ -18,55 +18,55 @@ class ChannelBreakout {
     int position; // OK
     bool traded; // OK
     int n; // OK
-    double prevClose; // OK
+    float prevClose; // OK
 
     // CONSTANTS
-    const double NUM_CONTRACTS; 
-    const double POINT_VALUE;
-    const double SLPG;
+    const float NUM_CONTRACTS; 
+    const float POINT_VALUE;
+    const float SLPG;
     const int ChnLen;
-    const double StpPct;
+    const float StpPct;
 
     // EQ CURVE
-    double equity; // OK
-    double equityMax; // OK
+    float equity; // OK
+    float equityMax; // OK
 
     // TRADES
-    double numTrades; // OK
-    double numPositiveTrades; // OK
-    double avgWinner;
-    double avgLooser;
+    float numTrades; // OK
+    float numPositiveTrades; // OK
+    float avgWinner;
+    float avgLooser;
     
     // DRAWDOWNS
-    double drawdown; // OK
-    double maxDrawdown; // OK
+    float drawdown; // OK
+    float maxDrawdown; // OK
 
     // DELTA AND DELTA STATS
-    double delta; // OK
-    double deltaMean; // OK
-    double deltaSum2_C; // OK
-    double deltaSum3_C; // OK
-    double deltaSum4_C;
+    float delta; // OK
+    float deltaMean; // OK
+    float deltaSum2_C; // OK
+    float deltaSum3_C; // OK
+    float deltaSum4_C;
 
-    double HH;
-    double LL;
+    float HH;
+    float LL;
 
     bool buy;
     bool sell;
 
-    double benchmarkLong;
-    double benchmarkShort;
+    float benchmarkLong;
+    float benchmarkShort;
 
     bool buyLong;
     bool sellShort;
     
 
-    std::queue<std::pair<double, int>> lastHs;
-    std::queue<std::pair<double, int>> lastLs;
-    std::set<std::pair<double, int>, std::greater<std::pair<double, int>>> setLastHs;
-    std::set<std::pair<double, int>, std::less<std::pair<double, int>>> setLastLs;
+    std::queue<std::pair<float, int>> lastHs;
+    std::queue<std::pair<float, int>> lastLs;
+    std::set<std::pair<float, int>, std::greater<std::pair<float, int>>> setLastHs;
+    std::set<std::pair<float, int>, std::less<std::pair<float, int>>> setLastLs;
 
-    ChannelBreakout(const double NUM_CONTRACTS, const double POINT_VALUE, const double SLPG, int ChnLen, double StpPct) : 
+    ChannelBreakout(const float NUM_CONTRACTS, const float POINT_VALUE, const float SLPG, int ChnLen, float StpPct) : 
 
         position(0.),
         traded(false),
@@ -106,7 +106,7 @@ class ChannelBreakout {
         
         {};
 
-    void updateTrades(double num) {
+    void updateTrades(float num) {
 
         numTrades += num;
         if (delta > 0.) {
@@ -117,7 +117,7 @@ class ChannelBreakout {
         }
 
     }    
-    void update(const Bar& bar, double HH, double LL, const int counter) {
+    void update(const Bar& bar, float HH, float LL, const int counter) {
 
         n += 1;
         traded = false;
@@ -212,10 +212,10 @@ class ChannelBreakout {
         maxDrawdown = std::min(drawdown, maxDrawdown);
 
         // Delta Stat UPDATE
-        double deviation = delta - deltaMean;
-        double deviation_n = deviation / n;
-        double deviation_n2 = deviation_n * deviation_n;
-        double term1 = deviation * deviation_n * (n - 1);
+        float deviation = delta - deltaMean;
+        float deviation_n = deviation / n;
+        float deviation_n2 = deviation_n * deviation_n;
+        float term1 = deviation * deviation_n * (n - 1);
         deltaMean += deviation / n;
         deltaSum4_C += term1 * deviation_n2 * (n * n - 3 * n + 3) + 6 * deviation_n2 * deltaSum2_C - 4 * deviation_n * deltaSum3_C;
         deltaSum3_C += term1 * deviation_n * (n - 2) - 3 * deviation_n * deltaSum2_C;
@@ -230,22 +230,22 @@ class ChannelBreakout {
 class StrategyEngine {
     public:
 
-    static void recordStrategy(const ChannelBreakout& strat, std::vector<std::vector<double>>& results);
+    static void recordStrategy(const ChannelBreakout& strat, std::vector<std::vector<float>>& results);
 
-    static void recordStrategyEquity(const ChannelBreakout& strat, const Bar& bar, std::vector<std::vector<double>>& results);
+    static void recordStrategyEquity(const ChannelBreakout& strat, const Bar& bar, std::vector<std::vector<float>>& results);
 
-    static void recordStrategyEquity(const ChannelBreakout& strat, std::vector<std::vector<double>>& results);
+    static void recordStrategyEquity(const ChannelBreakout& strat, std::vector<std::vector<float>>& results);
 
     static void run(
         ChannelBreakout& strat, 
         const std::vector<Bar>& bars, 
-        std::vector<double> HHs, 
-        std::vector<double> LLs, 
+        std::vector<float> HHs, 
+        std::vector<float> LLs, 
         unsigned long long start_date, unsigned long long end_date,
         bool recordStrat = false,
         std::string outputFile = "../output/results2.csv") {
         
-        std::vector<std::vector<double>> stratResults;
+        std::vector<std::vector<float>> stratResults;
         int counter = -1;
         for (const auto& bar : bars) {
             counter++;
@@ -278,37 +278,37 @@ class StrategyEngine {
 
 }; 
 
-void StrategyEngine::recordStrategyEquity(const ChannelBreakout& strat, const Bar& bar, std::vector<std::vector<double>>& results) {
+void StrategyEngine::recordStrategyEquity(const ChannelBreakout& strat, const Bar& bar, std::vector<std::vector<float>>& results) {
 
     auto [year, month, day, hour, minute] = seperateDate(bar.timestamp);
 
     results.push_back( { 
-        (double) year,
-        (double) month,
-        (double) day,
-        (double) hour,
-        (double) minute,
-        (double) strat.ChnLen, 
+        (float) year,
+        (float) month,
+        (float) day,
+        (float) hour,
+        (float) minute,
+        (float) strat.ChnLen, 
         strat.StpPct, 
         strat.equity, 
         strat.drawdown,
-        (double) strat.position
+        (float) strat.position
     } );
 }
 
-void StrategyEngine::recordStrategy(const ChannelBreakout& strat, std::vector<std::vector<double>>& results) {
-    double pctPosTrades = strat.numPositiveTrades / strat.numTrades;
+void StrategyEngine::recordStrategy(const ChannelBreakout& strat, std::vector<std::vector<float>>& results) {
+    float pctPosTrades = strat.numPositiveTrades / strat.numTrades;
 
-    double var  = (1. / strat.n) * strat.deltaSum2_C;
-    double std_ = std::sqrt(var);
-    double skew = strat.n * (strat.deltaSum3_C / std::pow (strat.deltaSum2_C, 1.5));
-    double xkurt = strat.n * (strat.deltaSum4_C / std::pow(strat.deltaSum2_C, 2.0)) - 3.;
+    float var  = (1. / strat.n) * strat.deltaSum2_C;
+    float std_ = std::sqrt(var);
+    float skew = strat.n * (strat.deltaSum3_C / std::pow (strat.deltaSum2_C, 1.5));
+    float xkurt = strat.n * (strat.deltaSum4_C / std::pow(strat.deltaSum2_C, 2.0)) - 3.;
 
 
     results.push_back( { 
-        (double) strat.ChnLen, 
+        (float) strat.ChnLen, 
         strat.StpPct, 
-        (double) strat.n,
+        (float) strat.n,
         strat.equity, 
         strat.equityMax, 
         strat.maxDrawdown, 
@@ -328,7 +328,7 @@ void StrategyEngine::recordStrategy(const ChannelBreakout& strat, std::vector<st
     } );
 }
 
-void recordStrategy(const ChannelBreakout& strat, std::vector<std::vector<double>>& results, std::mutex& mtx) {
+void recordStrategy(const ChannelBreakout& strat, std::vector<std::vector<float>>& results, std::mutex& mtx) {
     std::lock_guard<std::mutex> lock(mtx);
     StrategyEngine::recordStrategy(strat, results);
 }

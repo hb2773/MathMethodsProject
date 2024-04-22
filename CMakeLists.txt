@@ -14,10 +14,20 @@ include_directories(${Boost_INCLUDE_DIRS} include)
 # Add an executable target named 'my_app' to be built from the source files listed
 
 add_executable(main src/main.cpp)
+target_link_libraries(main ${Boost_LIBRARIES})
+
 add_executable(main2 src/main2.cpp)
+
 add_executable(main3 src/main3.cpp)
+
 add_executable(insampleconstructiontest src/insampleconstructiontest.cpp)
+target_link_libraries(insampleconstructiontest ${Boost_LIBRARIES})
+
+add_executable(memmaptest src/memmaptest.cpp)
+target_link_libraries(insampleconstructiontest ${Boost_LIBRARIES})
+
 add_executable(servectest src/servectest.cpp)
+
 
 
 

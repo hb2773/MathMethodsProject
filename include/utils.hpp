@@ -9,9 +9,9 @@
 #include <iostream>
 
 template<typename Comparator>
-std::vector<double> SlidingWindowImpl(const std::vector<double>& arr, int k, Comparator comp) {
-    std::vector<double> ans;
-    std::set<std::pair<double, int>, Comparator> st(comp);
+std::vector<float> SlidingWindowImpl(const std::vector<float>& arr, int k, Comparator comp) {
+    std::vector<float> ans;
+    std::set<std::pair<float, int>, Comparator> st(comp);
 
     for (int i = 0; i < k - 1; i++) {
         st.insert({arr[i], i});
@@ -29,17 +29,17 @@ std::vector<double> SlidingWindowImpl(const std::vector<double>& arr, int k, Com
     return ans;
 }
 
-std::vector<double> MinMaxSlidingWindow(const std::vector<double>& arr, int k, bool max) {
+std::vector<float> MinMaxSlidingWindow(const std::vector<float>& arr, int k, bool max) {
     if (max) {
-        return SlidingWindowImpl(arr, k, std::greater<std::pair<double, int>>());
+        return SlidingWindowImpl(arr, k, std::greater<std::pair<float, int>>());
     } else {
-        return SlidingWindowImpl(arr, k, std::less<std::pair<double, int>>());
+        return SlidingWindowImpl(arr, k, std::less<std::pair<float, int>>());
     }
 }
 
 // template<typename Comparator>
-// std::vector<double> SlidingWindowImpl(const std::vector<double>& arr, int k, Comparator comp) {
-//     std::vector<double> results;
+// std::vector<float> SlidingWindowImpl(const std::vector<float>& arr, int k, Comparator comp) {
+//     std::vector<float> results;
 //     std::deque<int> deq;
 
 //     for (int i = 0; i < arr.size(); i++) {
@@ -68,13 +68,13 @@ std::vector<double> MinMaxSlidingWindow(const std::vector<double>& arr, int k, b
 //     return results;
 // }
 
-// std::vector<double> MinMaxSlidingWindow(const std::vector<double>& arr, int k, bool max) {
+// std::vector<float> MinMaxSlidingWindow(const std::vector<float>& arr, int k, bool max) {
 //     if (max) {
 //         // Use a custom comparator to maintain the indices of the maximum elements in the deque
-//         return SlidingWindowImpl(arr, k, std::greater<double>());
+//         return SlidingWindowImpl(arr, k, std::greater<float>());
 //     } else {
 //         // Use a custom comparator to maintain the indices of the minimum elements in the deque
-//         return SlidingWindowImpl(arr, k, std::less<double>());
+//         return SlidingWindowImpl(arr, k, std::less<float>());
 //     }
 // }
 
@@ -91,7 +91,7 @@ void writeVectorToCSV(std::ofstream& outFile, const std::vector<T>& vec, const i
     outFile << "\n";
 }
 
-void writeResultsToCSV(const std::string& filename, const std::vector<std::vector<double>>& data) {
+void writeResultsToCSV(const std::string& filename, const std::vector<std::vector<float>>& data) {
     std::ofstream outFile(filename);
 
     // Check if file is open
@@ -115,7 +115,7 @@ void writeResultsToCSV(const std::string& filename, const std::vector<std::vecto
     outFile.close();
 }
 
-void writeStratEquityResultsToCSV(const std::string& filename, const std::vector<std::vector<double>>& data) {
+void writeStratEquityResultsToCSV(const std::string& filename, const std::vector<std::vector<float>>& data) {
     std::ofstream outFile(filename);
 
     // Check if file is open
@@ -139,7 +139,7 @@ void writeStratEquityResultsToCSV(const std::string& filename, const std::vector
     outFile.close();
 }
 
-void constructHHLLFile(std::string& high_low_file, int cmin, int cmax, int step, std::vector<double> highs, std::vector<double> lows) {
+void constructHHLLFile(std::string& high_low_file, int cmin, int cmax, int step, std::vector<float> highs, std::vector<float> lows) {
     std::ofstream outHighLowFile(high_low_file);
     if (!outHighLowFile) {
         std::cerr << "Error opening file for writing." << std::endl;

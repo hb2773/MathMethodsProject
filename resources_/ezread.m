@@ -51,7 +51,7 @@ format_str = [];
 for i = 1:length(data)
     % If str2num returns a numeric value, then the column in numeric,
     % otherwise if str2num returns empty, then the column is text
-    if ~isnan(str2double(data{i}))
+    if ~isnan(str2float(data{i}))
         col_format = '%f ';
     else
         col_format = '%q ';

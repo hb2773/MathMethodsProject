@@ -25,31 +25,40 @@ int main () {
     // SIZE 
     const int SIZE = 611'839;
 
-    const double NUM_CONTRACTS = 1.; 
-    const double POINT_VALUE = 64'000.;
-    const double SLPG = 65.;
+    const float NUM_CONTRACTS = 1.f; 
+    const float POINT_VALUE = 64'000.f;
+    const float SLPG = 65.f;
 
 
     std::string filename = "../data/" + ASSET + ".csv"; // Replace with your actual file name
+
+    std::string HHFilename = "../data/" + ASSET + "_HH_data.dat";
+    std::string LLFilename = "../data/" + ASSET + "_LL_data.dat";
+
+    const char* HHFilename_ = HHFilename.data();
+    const char* LLFilename_ = LLFilename.data(); 
+
+   
 
     const int CHN_LEN_MIN = 1000; // 500
     const int CHN_LEN_MAX = 10000; // 10000
     const int CHN_LEN_STEP = 500; // 10
 
-    const double STP_PCT_MIN = 0.005; // 0.005
-    const double STP_PCT_MAX = 0.018; // 0.10
-    const double STP_PCT_STEP = 0.001; // 0.001
+    const float STP_PCT_MIN = 0.005f; // 0.005
+    const float STP_PCT_MAX = 0.018f; // 0.10
+    const float STP_PCT_STEP = 0.001f; // 0.001
 
     const int NUM_CHN_LEN = static_cast<int>(std::ceil((CHN_LEN_MAX - CHN_LEN_MIN + CHN_LEN_STEP) / CHN_LEN_STEP));
     const int NUM_STP_PCT = static_cast<int>(std::ceil((STP_PCT_MAX - STP_PCT_MIN + STP_PCT_STEP) / STP_PCT_STEP));
-
+    
+    std::size_t fileSize = (SIZE + 2) * NUM_CHN_LEN * sizeof(float); // 64 MB for example
     std::cout << "Size of param space:" << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
     // ASSET /////////////////////////////////////////////////////
 
     auto bars = readData(filename);
 
-    std::vector<double> highs;
-    std::vector<double> lows;
+    std::vector<float> highs;
+    std::vector<float> lows;
 
     highs.reserve(SIZE);
     lows.reserve(SIZE);
@@ -58,6 +67,18 @@ int main () {
         highs.push_back(bars.at(i).high);
         lows.push_back(bars.at(i).low);
     }
+
+    // create_HH_LL_Vector(
+    //     HHFilename_, fileSize,
+    //     CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP,
+    //     highs,
+    //     true);
+
+    // create_HH_LL_Vector(
+    //     LLFilename_, fileSize,
+    //     CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP,
+    //     lows,
+    //     false);
 
     const unsigned long long start_date = 1990'1001'0000;
     const unsigned long long end_date   = 2023'1001'0000;
@@ -71,7 +92,7 @@ int main () {
         start_date, end_date,
         in_sample_years, out_sample_months,
         NUM_CONTRACTS, POINT_VALUE, SLPG, 
-        bars, highs, lows, 
+        bars, HHFilename_, LLFilename_, 
         CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, NUM_CHN_LEN,
         STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, NUM_STP_PCT 
         );
