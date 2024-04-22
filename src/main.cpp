@@ -42,18 +42,25 @@ int main() {
 
 
     std::string filename = "../data/" + ASSET + ".csv"; // Replace with your actual file name
-    std::string high_low_file = "../data/" + ASSET + "_high_low.csv";
+    
+    std::string HHFilename = "../data/" + ASSET + "_HH_data.dat";
+    std::string LLFilename = "../data/" + ASSET + "_LL_data.dat";
 
-    const int CHN_LEN_MIN = 10000; // 500
+    const char* HHFilename_ = HHFilename.data();
+    const char* LLFilename_ = LLFilename.data(); 
+
+    const int CHN_LEN_MIN = 10; // 500
     const int CHN_LEN_MAX = 10000; // 10000
     const int CHN_LEN_STEP = 1000; // 10
 
-    const float STP_PCT_MIN = 0.015f; // 0.005
-    const float STP_PCT_MAX = 0.018f;  // 0.10
+    const float STP_PCT_MIN = 0.005f; // 0.005
+    const float STP_PCT_MAX = 0.015f;  // 0.10
     const float STP_PCT_STEP = 0.001f; // 0.001
 
     const int NUM_CHN_LEN = static_cast<int>(std::ceil((CHN_LEN_MAX - CHN_LEN_MIN + CHN_LEN_STEP) / CHN_LEN_STEP));
     const int NUM_STP_PCT = static_cast<int>(std::ceil((STP_PCT_MAX - STP_PCT_MIN + STP_PCT_STEP) / STP_PCT_STEP));
+
+    std::size_t fileSize = (SIZE + 2) * (NUM_CHN_LEN + 2) * sizeof(float); // 64 MB for example
 
     std::cout << "NUM_CHN_LEN: " << NUM_CHN_LEN << std::endl;
     std::cout << "NUM_STP_PCT: " << NUM_STP_PCT << std::endl;
@@ -82,6 +89,19 @@ int main() {
         highs.push_back(bars.at(i).high);
         lows.push_back(bars.at(i).low);
     }
+
+    // create_HH_LL_Vector(
+    //     HHFilename_, fileSize,
+    //     CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP,
+    //     highs,
+    //     true);
+
+    // create_HH_LL_Vector(
+    //     LLFilename_, fileSize,
+    //     CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP,
+    //     lows,
+    //     false);
+
     // Need to do a for auto start_date
     unsigned long long start_date = 2007'1002'0000;
     unsigned long long end_date   = 2017'1001'0000;
