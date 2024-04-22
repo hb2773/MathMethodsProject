@@ -52,14 +52,13 @@ int main() {
     const double STP_PCT_MAX = 0.018;  // 0.10
     const double STP_PCT_STEP = 0.001; // 0.001
 
-    const int NUM_CHN_LEN = static_cast<int>(std::ceil((CHN_LEN_MAX - CHN_LEN_MIN) / CHN_LEN_STEP)) + 1;
-    const int NUM_STP_PCT = static_cast<int>(std::ceil((STP_PCT_MAX - STP_PCT_MIN) / STP_PCT_STEP)) + 1;
+    const int NUM_CHN_LEN = static_cast<int>(std::ceil((CHN_LEN_MAX - CHN_LEN_MIN + CHN_LEN_STEP) / CHN_LEN_STEP));
+    const int NUM_STP_PCT = static_cast<int>(std::ceil((STP_PCT_MAX - STP_PCT_MIN + STP_PCT_STEP) / STP_PCT_STEP));
 
     std::cout << "NUM_CHN_LEN: " << NUM_CHN_LEN << std::endl;
     std::cout << "NUM_STP_PCT: " << NUM_STP_PCT << std::endl;
     std::cout << "Size of param space:" << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
     // ASSET /////////////////////////////////////////////////////
-
 
     //std::map<unsigned long long, int> dates_to_indices;
     // std::vector<unsigned long long> dates;

@@ -42,15 +42,14 @@ class BackTestEngine {
         std::mutex mtx;
         std::vector<std::vector<double>> results;
 
-        int totalChnLenSteps = std::ceil((ChnLenMax - ChnLenMin) / ChnLenStep) + 1;
+        int numChnLen = std::ceil((ChnLenMax - ChnLenMin) / ChnLenStep) + 1;
 
-        // Number of threads
         const int num_threads = 4;
-
         std::vector<std::thread> threads;
+        int workload_per_thread = numChnLen / num_threads;
 
-        auto processRange = [&](int start, int end) {
-            for (int i = start; i < end; ++i) {
+        auto processRange = [&](int startRange, int endRange) {
+            for (int i = startRange; i < endRange; ++i) {
                 double ChnLen = ChnLenMin + i * ChnLenStep;
                 auto HHs = MinMaxSlidingWindow(highs, ChnLen, true);
                 auto LLs = MinMaxSlidingWindow(lows, ChnLen, false);
@@ -61,15 +60,12 @@ class BackTestEngine {
                 }
             }
         };
-
-        // Calculate workload per thread
-        int workload_per_thread = totalChnLenSteps / num_threads;
-
+        
         // Distribute the workload to each thread
         for (int i = 0; i < num_threads; ++i) {
-            int start = i * workload_per_thread;
-            int end = (i + 1 == num_threads) ? totalChnLenSteps : start + workload_per_thread;
-            threads.emplace_back(processRange, start, end);
+            int startRange = i * workload_per_thread;
+            int endRange = (i + 1 == num_threads) ? numChnLen : startRange + workload_per_thread;
+            threads.emplace_back(processRange, startRange, endRange);
         }
 
         // Wait for all threads to complete
