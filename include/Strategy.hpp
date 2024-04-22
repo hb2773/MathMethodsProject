@@ -242,7 +242,8 @@ class StrategyEngine {
         std::vector<double> HHs, 
         std::vector<double> LLs, 
         unsigned long long start_date, unsigned long long end_date,
-        bool recordStrat = false) {
+        bool recordStrat = false,
+        std::string outputFile = "../output/results2.csv") {
         
         std::vector<std::vector<double>> stratResults;
         int counter = -1;
@@ -271,7 +272,7 @@ class StrategyEngine {
             
         }
         if (recordStrat) {
-            writeStratEquityResultsToCSV("../output/results2.csv", stratResults);
+            writeStratEquityResultsToCSV(outputFile, stratResults);
         }
     }
 

@@ -1,3 +1,6 @@
+#ifndef BACKTESTENGINE_H
+#define BACKTESTENGINE_H
+
 #include <vector>
 #include <thread>
 #include <mutex>
@@ -87,8 +90,11 @@ class BackTestEngine {
                 optiStp = result.at(1);
             }
         }
-
+        std::cout << "Optimal Parameters Choosen for the in-sample dates:" << start_date << ":" << end_date << std::endl;
+        std::cout << "CHANNEL LENGTH: " << optiChn << " STP PCT: " << optiStp << std::endl;
         return {optiChn, optiStp};
 
     }
 };
+
+#endif

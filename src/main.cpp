@@ -45,7 +45,7 @@ int main() {
     std::string high_low_file = "../data/" + ASSET + "_high_low.csv";
 
     const int CHN_LEN_MIN = 10; // 500
-    const int CHN_LEN_MAX = 10; // 10000
+    const int CHN_LEN_MAX = 10000; // 10000
     const int CHN_LEN_STEP = 1000; // 10
 
     const double STP_PCT_MIN = 0.002; // 0.005

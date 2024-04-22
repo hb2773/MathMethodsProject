@@ -2,3 +2,5 @@ build/**
 .vscode
 **high_low**
 **.asv
+**insample**.csv
+**outsample**.csv

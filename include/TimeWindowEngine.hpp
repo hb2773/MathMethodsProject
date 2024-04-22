@@ -1,3 +1,6 @@
+#ifndef TIMEWINDOWENGINE_H
+#define TIMEWINDOWENGINE_H
+
 #include <vector>
 #include <filesystem>
 
@@ -36,8 +39,19 @@ class TimeWindowEngine {
 
         std::string outputFolder = "../" + asset + "_INSAMP_" + std::to_string(in_sample_length_in_year) + "_OUTSAMP_" + std::to_string(out_sample_length_in_month) + "_/";
 
+        std::string inSampleOutputFolder = outputFolder + "insample/";
+        std::string outSampleOutputFolder = outputFolder + "outsample/";
+
         if (!fs::exists(outputFolder)) {
             fs::create_directories(outputFolder);
+        }
+
+        if (!fs::exists(inSampleOutputFolder)) {
+            fs::create_directories(inSampleOutputFolder);
+        }
+
+        if (!fs::exists(outSampleOutputFolder)) {
+            fs::create_directories(outSampleOutputFolder);
         }
 
         do {
@@ -49,6 +63,9 @@ class TimeWindowEngine {
             std::cout << "In-sample: " << in_sample_start << ":" << in_sample_end; 
             std::cout << ", Out-sample: " << out_sample_start << ":" << out_sample_end << std::endl;
 
+            auto inSampleFileName =  inSampleOutputFolder + "INSAMPLE_START_" + std::to_string(in_sample_start) + "_INSAMPLE_END_" + std::to_string(in_sample_end) + ".csv";
+            auto outSampleFileName = outSampleOutputFolder + "OUTSAMPLE_START_" + std::to_string(out_sample_start) + "_OUTSAMPLE_END_" + std::to_string(out_sample_end) + ".csv";
+
             // Strategy execution here
             auto [optiChn, optiStp] = BackTestEngine::run(
                 NUM_CONTRACTS, POINT_VALUE, SLPG,
@@ -56,12 +73,12 @@ class TimeWindowEngine {
                 ChnLenMin, ChnLenMax, ChnLenStep,
                 StpPctMin, StpPctMax, StpPctStep,
                 start_date, end_date, 
-                false, outputFolder);
+                false, inSampleFileName);
 
             ChannelBreakout strat = ChannelBreakout(NUM_CONTRACTS, POINT_VALUE, SLPG, optiChn, optiStp);
             auto HHs = MinMaxSlidingWindow(highs, optiChn, true);
             auto LLs = MinMaxSlidingWindow(lows, optiChn, false);
-            StrategyEngine::run(strat, bars, HHs, LLs, out_sample_start, out_sample_end, true);
+            StrategyEngine::run(strat, bars, HHs, LLs, out_sample_start, out_sample_end, true, outSampleFileName);
 
             // Time Increment
             in_sample_start = incrementDate(in_sample_start, 0, out_sample_length_in_month);
@@ -69,3 +86,5 @@ class TimeWindowEngine {
         while (out_sample_end < end_date);
     }
 };
+
+#endif

@@ -32,11 +32,11 @@ int main () {
 
     std::string filename = "../data/" + ASSET + ".csv"; // Replace with your actual file name
 
-    const int CHN_LEN_MIN = 10; // 500
-    const int CHN_LEN_MAX = 10; // 10000
-    const int CHN_LEN_STEP = 1000; // 10
+    const int CHN_LEN_MIN = 1000; // 500
+    const int CHN_LEN_MAX = 10000; // 10000
+    const int CHN_LEN_STEP = 500; // 10
 
-    const double STP_PCT_MIN = 0.015; // 0.005
+    const double STP_PCT_MIN = 0.005; // 0.005
     const double STP_PCT_MAX = 0.018; // 0.10
     const double STP_PCT_STEP = 0.001; // 0.001
 
@@ -59,14 +59,15 @@ int main () {
         lows.push_back(bars.at(i).low);
     }
 
-    const unsigned long long start_date = 1985'1001'0000;
-    const unsigned long long end_date   = 2017'1001'0000;
+    const unsigned long long start_date = 1990'1001'0000;
+    const unsigned long long end_date   = 2023'1001'0000;
 
     const int in_sample_years = 4;
-    const int out_sample_months = 1;
+    const int out_sample_months = 3;
 
     auto t1 = std::chrono::high_resolution_clock::now();
     TimeWindowEngine::run(
+        ASSET,
         start_date, end_date,
         in_sample_years, out_sample_months,
         NUM_CONTRACTS, POINT_VALUE, SLPG, 
