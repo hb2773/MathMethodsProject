@@ -84,7 +84,7 @@ void writeStratEquityResultsToCSV(const std::string& filename, const std::vector
     }
 
     // Writing header
-    outFile << "YYYY,MM,DD,hh,mm,Chnlen,StpPct,nObs,Equity,Drawdown,Position\n"; 
+    outFile << "YYYY,MM,DD,hh,mm,Chnlen,StpPct,Equity,Drawdown,Position\n"; 
 
     // Writing data
     for (const auto& row : data) {

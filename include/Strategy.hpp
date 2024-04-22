@@ -288,7 +288,6 @@ void StrategyEngine::recordStrategyEquity(const ChannelBreakout& strat, const Ba
         (double) ((bar.timestamp % 1'00)),
         (double) strat.ChnLen, 
         strat.StpPct, 
-        (double) strat.n,
         strat.equity, 
         strat.drawdown,
         (double) strat.position
