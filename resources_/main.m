@@ -12,8 +12,8 @@ PV=64000;
 
 % 11500 0.019
 % 12700 0.01
-Length=10:1000:10;
-StopPct=0.002:0.001:0.002;
+Length=10000:1000:10000;
+StopPct=0.015:0.001:0.018;
 
 resultLabel={'Profit','WorstDrawDown','StDev','#trades'};
 

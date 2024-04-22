@@ -44,17 +44,19 @@ int main() {
     std::string filename = "../data/" + ASSET + ".csv"; // Replace with your actual file name
     std::string high_low_file = "../data/" + ASSET + "_high_low.csv";
 
-    const int CHN_LEN_MIN = 10; // 500
+    const int CHN_LEN_MIN = 10000; // 500
     const int CHN_LEN_MAX = 10000; // 10000
     const int CHN_LEN_STEP = 1000; // 10
 
-    const double STP_PCT_MIN = 0.005; // 0.005
-    const double STP_PCT_MAX = 0.10;  // 0.10
-    const double STP_PCT_STEP = 0.01; // 0.001
+    const double STP_PCT_MIN = 0.015; // 0.005
+    const double STP_PCT_MAX = 0.018;  // 0.10
+    const double STP_PCT_STEP = 0.001; // 0.001
 
     const int NUM_CHN_LEN = static_cast<int>(std::ceil((CHN_LEN_MAX - CHN_LEN_MIN) / CHN_LEN_STEP)) + 1;
     const int NUM_STP_PCT = static_cast<int>(std::ceil((STP_PCT_MAX - STP_PCT_MIN) / STP_PCT_STEP)) + 1;
 
+    std::cout << "NUM_CHN_LEN: " << NUM_CHN_LEN << std::endl;
+    std::cout << "NUM_STP_PCT: " << NUM_STP_PCT << std::endl;
     std::cout << "Size of param space:" << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
     // ASSET /////////////////////////////////////////////////////
 
@@ -83,7 +85,7 @@ int main() {
     }
     // Need to do a for auto start_date
     unsigned long long start_date = 2007'1002'0000;
-    unsigned long long end_date   = 2017'1002'0000;
+    unsigned long long end_date   = 2017'1001'0000;
     bool recordStrat = true;
 
     auto t1 = std::chrono::high_resolution_clock::now();
@@ -124,7 +126,7 @@ int main() {
     // auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
     std::cout << "Data Read in: " << duration << " milliseconds" << std::endl;
-    std::cout << "Back Test Strategy for: " << NUM_CHN_LEN * NUM_STP_PCT << "params" << std::endl;
+    std::cout << "Back Test Strategy for: " << NUM_CHN_LEN * NUM_STP_PCT << " params" << std::endl;
     std::cout << "Execution in: " << dt << " milliseconds" << std::endl;
 
     return 0;

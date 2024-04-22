@@ -92,6 +92,7 @@ class BackTestEngine {
         }
         std::cout << "Optimal Parameters Choosen for the in-sample dates:" << start_date << ":" << end_date << std::endl;
         std::cout << "CHANNEL LENGTH: " << optiChn << " STP PCT: " << optiStp << std::endl;
+        std::cout << std::endl;
         return {optiChn, optiStp};
 
     }

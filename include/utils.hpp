@@ -37,6 +37,47 @@ std::vector<double> MinMaxSlidingWindow(const std::vector<double>& arr, int k, b
     }
 }
 
+// template<typename Comparator>
+// std::vector<double> SlidingWindowImpl(const std::vector<double>& arr, int k, Comparator comp) {
+//     std::vector<double> results;
+//     std::deque<int> deq;
+
+//     for (int i = 0; i < arr.size(); i++) {
+//         // Remove elements not within the window
+//         if (!deq.empty() && deq.front() == i - k) {
+//             deq.pop_front();
+//         }
+
+//         // Maintain the deque - remove elements from the deque while the new element is 'better'
+//         while (!deq.empty() && comp(arr[deq.back()], arr[i])) {
+//             deq.pop_back();
+//         }
+
+//         // Add current element index at the end of the deque
+//         deq.push_back(i);
+
+//         // -1 padding for the elements where the window is not full
+//         if (i < k - 1) {
+//             results.push_back(-1.0); // Placeholder for incomplete windows
+//         } else {
+//             // Store the result from the current window
+//             results.push_back(arr[deq.front()]);
+//         }
+//     }
+
+//     return results;
+// }
+
+// std::vector<double> MinMaxSlidingWindow(const std::vector<double>& arr, int k, bool max) {
+//     if (max) {
+//         // Use a custom comparator to maintain the indices of the maximum elements in the deque
+//         return SlidingWindowImpl(arr, k, std::greater<double>());
+//     } else {
+//         // Use a custom comparator to maintain the indices of the minimum elements in the deque
+//         return SlidingWindowImpl(arr, k, std::less<double>());
+//     }
+// }
+
 template<typename T>
 void writeVectorToCSV(std::ofstream& outFile, const std::vector<T>& vec, const int ChnLen, bool high) {
     if (high) {
