@@ -1,6 +1,7 @@
 #ifndef DATAENCODER_H
 #define DATAENCODER_H
 
+#include <tuple>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -17,12 +18,33 @@ unsigned long long encodeDateTime(const std::string& date, const std::string& ti
     return test;
 }
 
+int getYear(unsigned long long date) {
+    return date / 1'00'00'00'00;
+}
+
+int getMonth(unsigned long long date) {
+    return (date / 1'00'00'00) % 1'00;
+}
+
+int getDay(unsigned long long date) {
+    return (date / 1'00'00) % 1'00;
+}
+
+int getHour(unsigned long long date) {
+    return (date / 1'00) % 1'00;
+}
+
+int getMinute(unsigned long long date) {
+    return date % 1'00;
+}
+
+std::tuple<int, int, int, int, int>seperateDate(unsigned long long date) {
+    return {getYear(date), getMonth(date), getDay(date), getHour(date), getMinute(date)};
+}
+
 unsigned long long incrementDate(unsigned long long date, int addYears, int addMonths) {
-    int year = date / 1'00'00'00'00;
-    int month = (date / 1'00'00'00) % 1'00;
-    int day = (date / 1'00'00) % 1'00;
-    int hour = (date / 1'00) % 1'00;
-    int minute = date % 1'00;
+
+    auto [year, month, day, hour, minute] = seperateDate(date);
 
     year += addYears;
     int month_temp = month + addMonths;
@@ -32,6 +54,7 @@ unsigned long long incrementDate(unsigned long long date, int addYears, int addM
     unsigned long long newDate = year * 1'00'00'00'00ULL + month * 1'00'00'00 + day * 1'00'00 + hour * 1'00 + minute;
     return newDate;
 }
+
 
 
 #endif

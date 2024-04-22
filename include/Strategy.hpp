@@ -280,12 +280,14 @@ class StrategyEngine {
 
 void StrategyEngine::recordStrategyEquity(const ChannelBreakout& strat, const Bar& bar, std::vector<std::vector<double>>& results) {
 
+    auto [year, month, day, hour, minute] = seperateDate(bar.timestamp);
+
     results.push_back( { 
-        (double) (bar.timestamp / 1'00'00'00'00),
-        (double) ((bar.timestamp / 1'00'00'00) % 1'00),
-        (double) ((bar.timestamp / 1'00'00) % 1'00),
-        (double) ((bar.timestamp / 1'00) % 1'00),
-        (double) ((bar.timestamp % 1'00)),
+        (double) year,
+        (double) month,
+        (double) day,
+        (double) hour,
+        (double) minute,
         (double) strat.ChnLen, 
         strat.StpPct, 
         strat.equity, 

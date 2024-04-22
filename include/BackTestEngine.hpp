@@ -1,6 +1,9 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <utility>
+#include <limits>
+#include <cmath>
 
 #include "Constants.hpp"
 #include "Bar.hpp"
@@ -15,7 +18,7 @@
 
 class BackTestEngine {
     public:
-    static void run(
+    static std::pair<double,double> run(
         const double NUM_CONTRACTS,
         const double POINT_VALUE, 
         const double SLPG,
@@ -30,8 +33,8 @@ class BackTestEngine {
         double StpPctStep, 
         unsigned long long start_date, 
         unsigned long long end_date,
-        bool recordStrat = false
-        ) 
+        bool recordStrat = false,
+        std::string folder = "../output/results.csv") 
     {
         std::mutex mtx;
         std::vector<std::vector<double>> results;
@@ -71,7 +74,21 @@ class BackTestEngine {
             thread.join();
         }
         
-        writeResultsToCSV("../output/results.csv", results);
+        writeResultsToCSV(folder, results);
+
+        double optiChn;
+        double optiStp;
+        double maxNPWDD = std::numeric_limits<double>::lowest();
+        for (auto& result: results) {
+            auto NPWDD = result.at(3) / std::abs(result.at(5));
+            if (NPWDD > maxNPWDD) {
+                maxNPWDD = NPWDD;
+                optiChn = result.at(0);
+                optiStp = result.at(1);
+            }
+        }
+
+        return {optiChn, optiStp};
 
     }
 };
