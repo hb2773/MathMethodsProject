@@ -53,7 +53,8 @@ class BackTestEngine {
                 double ChnLen = ChnLenMin + i * ChnLenStep;
                 auto HHs = MinMaxSlidingWindow(highs, ChnLen, true);
                 auto LLs = MinMaxSlidingWindow(lows, ChnLen, false);
-                for (double StpPct = StpPctMin; StpPct <= StpPctMax; StpPct += StpPctStep) {
+                for (double StpPct = StpPctMin; StpPct < StpPctMax + StpPctStep; StpPct += StpPctStep) {
+                    std::cout << StpPct << std::endl;
                     ChannelBreakout strat = ChannelBreakout(NUM_CONTRACTS, POINT_VALUE, SLPG, ChnLen, StpPct);
                     StrategyEngine::run(strat, bars, HHs, LLs, start_date, end_date, recordStrat);
                     recordStrategy(strat, results, mtx);
@@ -86,7 +87,7 @@ class BackTestEngine {
                 optiStp = result.at(1);
             }
         }
-        std::cout << "Optimal Parameters Choosen for the in-sample dates:" << start_date << ":" << end_date << std::endl;
+        std::cout << "Optimal Parameters Choosen for the in-sample dates: " << start_date << " - " << end_date << std::endl;
         std::cout << "CHANNEL LENGTH: " << optiChn << " STP PCT: " << optiStp << std::endl;
         std::cout << std::endl;
         return {optiChn, optiStp};

@@ -15,8 +15,9 @@ include_directories(${Boost_INCLUDE_DIRS} include)
 
 add_executable(main src/main.cpp)
 add_executable(main2 src/main2.cpp)
-add_executable(main3 src/servectest.cpp)
+add_executable(main3 src/main3.cpp)
 add_executable(insampleconstructiontest src/insampleconstructiontest.cpp)
+add_executable(servectest src/servectest.cpp)
 
 
 
