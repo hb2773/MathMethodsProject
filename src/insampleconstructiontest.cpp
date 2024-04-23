@@ -43,7 +43,7 @@ int main () {
     const int CHN_LEN_STEP = 10; // 10
 
     const float STP_PCT_MIN = 0.005f; // 0.005
-    const float STP_PCT_MAX = 0.01f; // 0.10
+    const float STP_PCT_MAX = 0.1f; // 0.10
     const float STP_PCT_STEP = 0.001f; // 0.001
 
     const int NUM_CHN_LEN = static_cast<int>(std::ceil((CHN_LEN_MAX - CHN_LEN_MIN + CHN_LEN_STEP) / CHN_LEN_STEP));
