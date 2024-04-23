@@ -239,8 +239,8 @@ class StrategyEngine {
     static void run(
         ChannelBreakout& strat, 
         const std::vector<Bar>& bars, 
-        std::vector<float> HHs, 
-        std::vector<float> LLs, 
+        const std::vector<float>& HHs, 
+        const std::vector<float>& LLs, 
         unsigned long long start_date, unsigned long long end_date,
         bool recordStrat = false,
         std::string outputFile = "../output/results2.csv") {
@@ -253,6 +253,47 @@ class StrategyEngine {
                 continue;
             } else if (bar.timestamp < end_date) {
                 strat.update(bar, HHs.at(counter - 1), LLs.at(counter - 1), counter);
+                if (recordStrat) {
+                    recordStrategyEquity(strat, bar, stratResults);
+                }
+            } else {
+                std::cout << std::endl;
+                std::cout << "STRATEGY RUN " << std::endl;
+                std::cout << "CHNL LENGTH  " << strat.ChnLen               << std::endl;
+                std::cout << "STP PCT      " << strat.StpPct               << std::endl;
+                std::cout << "PNL          " << strat.equity - INIT_EQUITY << std::endl;
+                std::cout << "MAX DRAWDOWN " << strat.maxDrawdown          << std::endl;
+                std::cout << "NUM TRADES   " << strat.numTrades            << std::endl;
+                std::cout << "EQUITY MAX   " << strat.equityMax            << std::endl;
+                std::cout << std::endl;
+                // TODO: OUTPUT IN A CSV FILE THE RESULTS OF THE STRATEGY
+                break;
+            }
+            
+        }
+        if (recordStrat) {
+            writeStratEquityResultsToCSV(outputFile, stratResults);
+        }
+    }
+
+    static void run(
+        ChannelBreakout& strat, 
+        const std::vector<Bar>& bars, 
+        const std::vector<std::pair<float,float>>& HHs_LLs, 
+        const int indexChn,
+        unsigned long long start_date, unsigned long long end_date,
+        bool recordStrat = false,
+        std::string outputFile = "../output/results2.csv") {
+        
+        std::vector<std::vector<float>> stratResults;
+        int counter = -1;
+        for (const auto& bar : bars) {
+            counter++;
+            if (counter < BARS_BACK || bar.timestamp < start_date) {
+                continue;
+            } else if (bar.timestamp < end_date) {
+                auto [HH, LL] = HHs_LLs.at(indexChn * bars.size() + counter - 1);
+                strat.update(bar, HH, LL, counter);
                 if (recordStrat) {
                     recordStrategyEquity(strat, bar, stratResults);
                 }

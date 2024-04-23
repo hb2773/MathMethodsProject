@@ -74,7 +74,7 @@ class TimeWindowEngine {
                 bars, HHFilename_, LLFilename_,
                 ChnLenMin, ChnLenMax, ChnLenStep, NumChnLen,
                 StpPctMin, StpPctMax, StpPctStep, NumStpPct,
-                start_date, end_date, 
+                in_sample_start, in_sample_end, 
                 false, inSampleFileName);
 
             ChannelBreakout strat = ChannelBreakout(NUM_CONTRACTS, POINT_VALUE, SLPG, optiChn, optiStp);
@@ -151,7 +151,7 @@ class TimeWindowEngine {
                 bars, highs, lows,
                 ChnLenMin, ChnLenMax, ChnLenStep, NumChnLen,
                 StpPctMin, StpPctMax, StpPctStep, NumStpPct,
-                start_date, end_date, 
+                in_sample_start, in_sample_end, // TODO: Review
                 false, inSampleFileName);
 
             ChannelBreakout strat = ChannelBreakout(NUM_CONTRACTS, POINT_VALUE, SLPG, optiChn, optiStp);

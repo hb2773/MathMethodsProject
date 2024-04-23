@@ -8,6 +8,7 @@
 #include <climits>
 #include <map>
 #include <span>
+#include <memory>
 
 #include "BackTestEngine.hpp"
 #include "DataReader.hpp"
@@ -34,7 +35,7 @@ int main() {
     // ASSET /////////////////////////////////////////////////////
     const std::string ASSET = "HO-5minHLV";
     // SIZE 
-    const int SIZE = 611'839;
+    constexpr int SIZE = 611'839;
 
     const float NUM_CONTRACTS = 1.f; 
     const float POINT_VALUE = 64'000.f;
@@ -49,13 +50,13 @@ int main() {
     const char* HHFilename_ = HHFilename.data();
     const char* LLFilename_ = LLFilename.data(); 
 
-    const int CHN_LEN_MIN = 10000; // 500
-    const int CHN_LEN_MAX = 10000; // 10000
-    const int CHN_LEN_STEP = 1000; // 10
+    constexpr int CHN_LEN_MIN = 10000; // 500
+    constexpr int CHN_LEN_MAX = 10000; // 10000
+    constexpr int CHN_LEN_STEP = 1000; // 10
 
-    const float STP_PCT_MIN = 0.015f; // 0.005
-    const float STP_PCT_MAX = 0.018f;  // 0.10
-    const float STP_PCT_STEP = 0.001f; // 0.001
+    constexpr float STP_PCT_MIN = 0.015f; // 0.005
+    constexpr float STP_PCT_MAX = 0.018f;  // 0.10
+    constexpr float STP_PCT_STEP = 0.001f; // 0.001
 
     const int NUM_CHN_LEN = static_cast<int>(std::ceil((CHN_LEN_MAX - CHN_LEN_MIN + CHN_LEN_STEP) / CHN_LEN_STEP));
     const int NUM_STP_PCT = static_cast<int>(std::ceil((STP_PCT_MAX - STP_PCT_MIN + STP_PCT_STEP) / STP_PCT_STEP));
@@ -64,7 +65,7 @@ int main() {
 
     std::cout << "NUM_CHN_LEN: " << NUM_CHN_LEN << std::endl;
     std::cout << "NUM_STP_PCT: " << NUM_STP_PCT << std::endl;
-    std::cout << "Size of param space:" << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
+    std::cout << "Size of param space: " << NUM_CHN_LEN * NUM_STP_PCT << std::endl;
     // ASSET /////////////////////////////////////////////////////
 
     //std::map<unsigned long long, int> dates_to_indices;
@@ -90,17 +91,24 @@ int main() {
         lows.push_back(bars.at(i).low);
     }
 
-    // create_HH_LL_Vector(
-    //     HHFilename_, fileSize,
-    //     CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP,
-    //     highs,
-    //     true);
+    // std::vector<std::vector<float>> BigHHS(NUM_CHN_LEN, std::vector<float>(SIZE));
+    // std::vector<std::vector<float>> BigLLS(NUM_CHN_LEN, std::vector<float>(SIZE));
 
-    // create_HH_LL_Vector(
-    //     LLFilename_, fileSize,
-    //     CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP,
-    //     lows,
-    //     false);
+    // std::unique_ptr<std::array<float, (size_t) NUM_CHN_LEN>> myArray = std::make_unique<std::array<float, NUM_CHN_LEN>>();
+
+    std::vector<std::pair<float, float>> HHs_LLs;
+    HHs_LLs.resize(SIZE * NUM_CHN_LEN);
+
+    for (int i = 0; i < NUM_CHN_LEN; i++) {
+        float chnLen = CHN_LEN_MIN + CHN_LEN_STEP * i;
+        auto HHs = MinMaxSlidingWindow(highs, chnLen, true);
+        auto LLs = MinMaxSlidingWindow(lows, chnLen, false);
+        for (int j = 0; j < bars.size(); j++) {
+            HHs_LLs.push_back({HHs[j], LLs[j]});
+        }
+    }
+    std::cout << HHs_LLs.size() << std::endl;
+    std::cout << bars.size() * NUM_CHN_LEN << std::endl;
 
     // Need to do a for auto start_date
     unsigned long long start_date = 2007'1002'0000;
@@ -110,7 +118,7 @@ int main() {
     auto t1 = std::chrono::high_resolution_clock::now();
     BackTestEngine::run(
         NUM_CONTRACTS, POINT_VALUE, SLPG, 
-        bars, highs, lows, 
+        bars, HHs_LLs, 
         CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, NUM_CHN_LEN,
         STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, NUM_STP_PCT,
         start_date, end_date,

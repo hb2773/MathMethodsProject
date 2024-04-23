@@ -20,6 +20,8 @@ add_executable(main2 src/main2.cpp)
 
 add_executable(main3 src/main3.cpp)
 
+add_executable(main4 src/main4.cpp)
+
 add_executable(insampleconstructiontest src/insampleconstructiontest.cpp)
 target_link_libraries(insampleconstructiontest ${Boost_LIBRARIES})
 
