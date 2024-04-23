@@ -5,6 +5,8 @@ project(MyProject VERSION 1.0)  # Name and version of your project
 set(CMAKE_CXX_STANDARD 20)  # C++ standard used by the project
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+add_compile_options(-O3)
+
 # Find Boost library components
 find_package(Boost 1.65 REQUIRED COMPONENTS date_time)  # Make sure the required date_time component is found
 

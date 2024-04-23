@@ -38,7 +38,7 @@ int main () {
     const char* HHFilename_ = HHFilename.data();
     const char* LLFilename_ = LLFilename.data(); 
 
-    const int CHN_LEN_MIN = 1000; // 500
+    const int CHN_LEN_MIN = 10000; // 500
     const int CHN_LEN_MAX = 10000; // 10000
     const int CHN_LEN_STEP = 20; // 10
 
@@ -79,7 +79,7 @@ int main () {
     //     false);
 
     const unsigned long long start_date = 1990'1001'0000;
-    const unsigned long long end_date   = 2018'1001'0000;
+    const unsigned long long end_date   = 2023'1001'0000;
 
     const int in_sample_years = 4;
     const int out_sample_months = 3;
