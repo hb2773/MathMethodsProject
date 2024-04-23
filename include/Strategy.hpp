@@ -307,7 +307,6 @@ class StrategyEngine {
                 std::cout << "NUM TRADES   " << strat.numTrades            << std::endl;
                 std::cout << "EQUITY MAX   " << strat.equityMax            << std::endl;
                 std::cout << std::endl;
-                // TODO: OUTPUT IN A CSV FILE THE RESULTS OF THE STRATEGY
                 break;
             }
             

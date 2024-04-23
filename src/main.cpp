@@ -90,17 +90,17 @@ int main() {
         lows.push_back(bars.at(i).low);
     }
 
-    // create_HH_LL_Vector(
-    //     HHFilename_, fileSize,
-    //     CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP,
-    //     highs,
-    //     true);
+    create_HH_LL_Vector(
+        HHFilename_, fileSize,
+        CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP,
+        highs,
+        true);
 
-    // create_HH_LL_Vector(
-    //     LLFilename_, fileSize,
-    //     CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP,
-    //     lows,
-    //     false);
+    create_HH_LL_Vector(
+        LLFilename_, fileSize,
+        CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP,
+        lows,
+        false);
 
     // Need to do a for auto start_date
     unsigned long long start_date = 2007'1002'0000;
@@ -110,7 +110,7 @@ int main() {
     auto t1 = std::chrono::high_resolution_clock::now();
     BackTestEngine::run(
         NUM_CONTRACTS, POINT_VALUE, SLPG, 
-        bars, highs, lows, 
+        bars, HHFilename_, LLFilename_, 
         CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, NUM_CHN_LEN,
         STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, NUM_STP_PCT,
         start_date, end_date,
