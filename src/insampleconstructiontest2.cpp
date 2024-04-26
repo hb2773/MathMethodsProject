@@ -21,7 +21,7 @@
 int main () {
 
     // ASSET /////////////////////////////////////////////////////
-    const std::string ASSET = "HO-5minHLV";
+    const std::string ASSET = "XG-5minHLV";
     // SIZE 
     const int SIZE = 611'839;
 
