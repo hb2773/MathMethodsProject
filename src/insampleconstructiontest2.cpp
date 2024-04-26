@@ -38,13 +38,13 @@ int main () {
     const char* HHFilename_ = HHFilename.data();
     const char* LLFilename_ = LLFilename.data(); 
 
-    const int CHN_LEN_MIN = 500; // 500
+    const int CHN_LEN_MIN = 10000; // 500
     const int CHN_LEN_MAX = 10000; // 10000
-    const int CHN_LEN_STEP = 10; // 10
+    const int CHN_LEN_STEP = 1000; // 10
 
-    const float STP_PCT_MIN = 0.005f; // 0.005
+    const float STP_PCT_MIN = 0.05f; // 0.005
     const float STP_PCT_MAX = 0.1f; // 0.10
-    const float STP_PCT_STEP = 0.001f; // 0.001
+    const float STP_PCT_STEP = 0.05f; // 0.001
 
     const int NUM_CHN_LEN = static_cast<int>(std::ceil((CHN_LEN_MAX - CHN_LEN_MIN + CHN_LEN_STEP) / CHN_LEN_STEP));
     const int NUM_STP_PCT = static_cast<int>(std::ceil((STP_PCT_MAX - STP_PCT_MIN + STP_PCT_STEP) / STP_PCT_STEP));
@@ -79,10 +79,11 @@ int main () {
         false);
 
 
-    const unsigned long long start_date = 1990'1001'0000;
-    const unsigned long long end_date   = 2003'0401'0000;
+    const unsigned long long start_date = 2001'1001'0000;
+    const unsigned long long end_date   = 2004'0401'0000;
 
     const int in_sample_years = 1;
+    const std::vector<int> out_sample_lengths_in_month = {1, 2, 3, 4, 5, 6};
 
     auto t1 = std::chrono::high_resolution_clock::now();
     ParallelTimeWindowEngine::run(
@@ -92,8 +93,8 @@ int main () {
         NUM_CONTRACTS, POINT_VALUE, SLPG, 
         bars, HHFilename_, LLFilename_, 
         CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, NUM_CHN_LEN,
-        STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, NUM_STP_PCT 
-        );
+        STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, NUM_STP_PCT, 
+        out_sample_lengths_in_month);
     auto t2 = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 

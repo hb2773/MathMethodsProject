@@ -82,8 +82,6 @@ class ParallelTimeWindowEngine {
                 in_sample_start, in_sample_end, 
                 false, outputFolder, out_sample_lengths_in_month);
 
-            out_sample_end_max = *std::max_element(out_sample_lengths_in_month.begin(), out_sample_lengths_in_month.end());
-
             std::vector<int> out_sample_ends(out_sample_lengths_in_month.size());
             std::transform(
                 out_sample_lengths_in_month.begin(), 
@@ -98,11 +96,14 @@ class ParallelTimeWindowEngine {
                 if (execution_counter % out_sample_length_in_month == 0) {
 
                     out_sample_end = incrementDate(out_sample_start, 0, out_sample_length_in_month);
+                    out_sample_end_max = std::max(out_sample_end, out_sample_end_max);
 
                     std::string outputFolder = "../" + asset + "_INSAMP_" + std::to_string(in_sample_length_in_year) + "_OUTSAMP_" + std::to_string(out_sample_length_in_month) + "_/";
                     std::string outSampleOutputFolder = outputFolder + "outsample/";
 
                     auto outSampleFileName = outSampleOutputFolder + "OUTSAMPLE_START_" + std::to_string(out_sample_start) + "_OUTSAMPLE_END_" + std::to_string(out_sample_end) + ".csv";
+
+                    // std::cout << outSampleFileName << std::endl;
 
                     ChannelBreakout strat = ChannelBreakout(NUM_CONTRACTS, POINT_VALUE, SLPG, optiChn, optiStp);
                     int k = (int) (optiChn - ChnLenMin) / ChnLenStep;
@@ -114,6 +115,7 @@ class ParallelTimeWindowEngine {
             }
             // Time Increment
             in_sample_start = incrementDate(in_sample_start, 0, 1);
+            std::cout << execution_counter << std::endl;
             execution_counter += 1;
         } 
         while (out_sample_end_max < end_date);
