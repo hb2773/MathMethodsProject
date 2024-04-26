@@ -9,7 +9,7 @@
 #include <map>
 #include <span>
 
-#include "TimeWindowEngine.hpp"
+#include "ParallelTimeWindowEngine.hpp"
 #include "BackTestEngine.hpp"
 #include "DataReader.hpp"
 #include "Bar.hpp"
@@ -79,17 +79,16 @@ int main () {
         false);
 
 
-    const unsigned long long start_date = 1990'1201'0000;
-    const unsigned long long end_date   = 2023'1001'0000;
+    const unsigned long long start_date = 1990'1001'0000;
+    const unsigned long long end_date   = 2003'0401'0000;
 
-    const int in_sample_years = 2;
-    const int out_sample_months = 2;
+    const int in_sample_years = 1;
 
     auto t1 = std::chrono::high_resolution_clock::now();
-    TimeWindowEngine::run(
+    ParallelTimeWindowEngine::run(
         ASSET,
         start_date, end_date,
-        in_sample_years, out_sample_months,
+        in_sample_years,
         NUM_CONTRACTS, POINT_VALUE, SLPG, 
         bars, HHFilename_, LLFilename_, 
         CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, NUM_CHN_LEN,

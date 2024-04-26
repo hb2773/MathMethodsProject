@@ -257,15 +257,15 @@ class StrategyEngine {
                     recordStrategyEquity(strat, bar, stratResults);
                 }
             } else {
-                std::cout << std::endl;
-                std::cout << "STRATEGY RUN " << std::endl;
-                std::cout << "CHNL LENGTH  " << strat.ChnLen               << std::endl;
-                std::cout << "STP PCT      " << strat.StpPct               << std::endl;
-                std::cout << "PNL          " << strat.equity - INIT_EQUITY << std::endl;
-                std::cout << "MAX DRAWDOWN " << strat.maxDrawdown          << std::endl;
-                std::cout << "NUM TRADES   " << strat.numTrades            << std::endl;
-                std::cout << "EQUITY MAX   " << strat.equityMax            << std::endl;
-                std::cout << std::endl;
+                // std::cout << std::endl;
+                // std::cout << "STRATEGY RUN " << std::endl;
+                // std::cout << "CHNL LENGTH  " << strat.ChnLen               << std::endl;
+                // std::cout << "STP PCT      " << strat.StpPct               << std::endl;
+                // std::cout << "PNL          " << strat.equity - INIT_EQUITY << std::endl;
+                // std::cout << "MAX DRAWDOWN " << strat.maxDrawdown          << std::endl;
+                // std::cout << "NUM TRADES   " << strat.numTrades            << std::endl;
+                // std::cout << "EQUITY MAX   " << strat.equityMax            << std::endl;
+                // std::cout << std::endl;
                 // TODO: OUTPUT IN A CSV FILE THE RESULTS OF THE STRATEGY
                 break;
             }
@@ -298,15 +298,15 @@ class StrategyEngine {
                     recordStrategyEquity(strat, bar, stratResults);
                 }
             } else {
-                std::cout << std::endl;
-                std::cout << "STRATEGY RUN " << std::endl;
-                std::cout << "CHNL LENGTH  " << strat.ChnLen               << std::endl;
-                std::cout << "STP PCT      " << strat.StpPct               << std::endl;
-                std::cout << "PNL          " << strat.equity - INIT_EQUITY << std::endl;
-                std::cout << "MAX DRAWDOWN " << strat.maxDrawdown          << std::endl;
-                std::cout << "NUM TRADES   " << strat.numTrades            << std::endl;
-                std::cout << "EQUITY MAX   " << strat.equityMax            << std::endl;
-                std::cout << std::endl;
+                // std::cout << std::endl;
+                // std::cout << "STRATEGY RUN " << std::endl;
+                // std::cout << "CHNL LENGTH  " << strat.ChnLen               << std::endl;
+                // std::cout << "STP PCT      " << strat.StpPct               << std::endl;
+                // std::cout << "PNL          " << strat.equity - INIT_EQUITY << std::endl;
+                // std::cout << "MAX DRAWDOWN " << strat.maxDrawdown          << std::endl;
+                // std::cout << "NUM TRADES   " << strat.numTrades            << std::endl;
+                // std::cout << "EQUITY MAX   " << strat.equityMax            << std::endl;
+                // std::cout << std::endl;
                 break;
             }
             

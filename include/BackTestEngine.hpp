@@ -40,7 +40,7 @@ class BackTestEngine {
         unsigned long long start_date, 
         unsigned long long end_date,
         bool recordStrat = false,
-        std::string folder = "../output/results.csv") 
+        std::string fileName = "../output/results.csv") 
     {
         std::mutex mtx;
         std::vector<std::vector<float>> results;
@@ -75,7 +75,7 @@ class BackTestEngine {
             thread.join();
         }
         
-        writeResultsToCSV(folder, results);
+        writeResultsToCSV(fileName, results);
 
         float optiChn;
         float optiStp;
@@ -94,6 +94,7 @@ class BackTestEngine {
         return {optiChn, optiStp};
 
     }
+
     static std::pair<float,float> run(
         const float NUM_CONTRACTS,
         const float POINT_VALUE, 
@@ -112,7 +113,8 @@ class BackTestEngine {
         unsigned long long start_date, 
         unsigned long long end_date,
         bool recordStrat = false,
-        std::string folder = "../output/results.csv") 
+        std::string fileName = "../output/results.csv", 
+        std::vector<int> out_sample_lengths_in_month = {}) 
     {
         std::mutex mtx;
         std::vector<std::vector<float>> results;
@@ -146,7 +148,15 @@ class BackTestEngine {
             thread.join();
         }
         
-        writeResultsToCSV(folder, results);
+        if (out_sample_lengths_in_month.size() == 0) {
+            writeResultsToCSV(fileName, results);
+        } else {
+            for (auto out_sample_lengths_in_month : out_sample_lengths_in_month) {
+                auto inSampleOutputFolder = fileName + "INSAMPLE_START_" + std::to_string(start_date) + "_INSAMPLE_END_" + std::to_string(end_date) + ".csv";
+                writeResultsToCSV(inSampleOutputFolder, results);
+            }
+        }
+
 
         float optiChn;
         float optiStp;
@@ -183,7 +193,8 @@ class BackTestEngine {
         unsigned long long start_date, 
         unsigned long long end_date,
         bool recordStrat = false,
-        std::string folder = "../output/results.csv") 
+        std::string fileName = "../output/results.csv", 
+        std::vector<int> out_sample_lengths_in_month = {}) 
     {
         std::mutex mtx;
         std::vector<std::vector<float>> results;
@@ -217,7 +228,14 @@ class BackTestEngine {
             thread.join();
         }
         
-        writeResultsToCSV(folder, results);
+        if (out_sample_lengths_in_month.size() == 0) {
+            writeResultsToCSV(fileName, results);
+        } else {
+            for (auto out_sample_lengths_in_month : out_sample_lengths_in_month) {
+                auto inSampleOutputFolder = fileName + "INSAMPLE_START_" + std::to_string(start_date) + "_INSAMPLE_END_" + std::to_string(end_date) + ".csv";
+                writeResultsToCSV(inSampleOutputFolder, results);
+            }
+        }
 
         float optiChn;
         float optiStp;
@@ -236,7 +254,6 @@ class BackTestEngine {
         return {optiChn, optiStp};
     }
 
-
     static std::pair<float,float> run(
         const float NUM_CONTRACTS,
         const float POINT_VALUE, 
@@ -254,7 +271,7 @@ class BackTestEngine {
         unsigned long long start_date, 
         unsigned long long end_date,
         bool recordStrat = false,
-        std::string folder = "../output/results.csv") 
+        std::string fileName = "../output/results.csv") 
     {
         std::mutex mtx;
         std::vector<std::vector<float>> results;
@@ -286,7 +303,7 @@ class BackTestEngine {
             thread.join();
         }
         
-        writeResultsToCSV(folder, results);
+        writeResultsToCSV(fileName, results);
 
         float optiChn;
         float optiStp;

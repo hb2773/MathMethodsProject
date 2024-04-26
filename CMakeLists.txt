@@ -24,8 +24,14 @@ add_executable(main3 src/main3.cpp)
 
 add_executable(main4 src/main4.cpp)
 
+add_executable(patch src/patch.cpp)
+target_link_libraries(patch ${Boost_LIBRARIES})
+
 add_executable(insampleconstructiontest src/insampleconstructiontest.cpp)
 target_link_libraries(insampleconstructiontest ${Boost_LIBRARIES})
+
+add_executable(insampleconstructiontest2 src/insampleconstructiontest2.cpp)
+target_link_libraries(insampleconstructiontest2 ${Boost_LIBRARIES})
 
 add_executable(memmaptest src/memmaptest.cpp)
 target_link_libraries(insampleconstructiontest ${Boost_LIBRARIES})

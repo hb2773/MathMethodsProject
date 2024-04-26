@@ -84,7 +84,7 @@ class TimeWindowEngine {
             StrategyEngine::run(strat, bars, HHs, LLs, out_sample_start, out_sample_end, true, outSampleFileName);
 
             // Time Increment
-            in_sample_start = incrementDate(in_sample_start, 0, out_sample_length_in_month);
+            in_sample_start = incrementDate(in_sample_start, 0, 12);
         } 
         while (out_sample_end < end_date);
     }

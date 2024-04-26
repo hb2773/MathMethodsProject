@@ -80,9 +80,9 @@ int main () {
 
 
     const unsigned long long start_date = 1990'1001'0000;
-    const unsigned long long end_date   = 2023'1001'0000;
+    const unsigned long long end_date   = 2003'0401'0000;
 
-    const int in_sample_years = 4;
+    const int in_sample_years = 1;
     const int out_sample_months = 3;
 
     auto t1 = std::chrono::high_resolution_clock::now();
