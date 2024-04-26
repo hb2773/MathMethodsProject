@@ -72,24 +72,23 @@ class ParallelTimeWindowEngine {
             std::cout << "In-sample: " << in_sample_start << ":" << in_sample_end; 
             std::cout << ", Out-sample: " << out_sample_start << ":" << out_sample_end << std::endl;
 
-            auto inSampleFileName =  inSampleOutputFolder + "INSAMPLE_START_" + std::to_string(in_sample_start) + "_INSAMPLE_END_" + std::to_string(in_sample_end) + ".csv";
-
             // Strategy execution here
+            std::string outputFolder = "../" + asset + "_INSAMP_" + std::to_string(in_sample_length_in_year);
             auto [optiChn, optiStp] = BackTestEngine::run(
                 NUM_CONTRACTS, POINT_VALUE, SLPG,
                 bars, HHFilename_, LLFilename_,
                 ChnLenMin, ChnLenMax, ChnLenStep, NumChnLen,
                 StpPctMin, StpPctMax, StpPctStep, NumStpPct,
                 in_sample_start, in_sample_end, 
-                false, inSampleFileName);
+                false, outputFolder, out_sample_lengths_in_month);
 
-            out_sample_end_max = std::max(out_sample_lengths_in_month);
+            out_sample_end_max = *std::max_element(out_sample_lengths_in_month.begin(), out_sample_lengths_in_month.end());
 
             std::vector<int> out_sample_ends(out_sample_lengths_in_month.size());
-            out_sample_ends = std::transform(
+            std::transform(
                 out_sample_lengths_in_month.begin(), 
                 out_sample_lengths_in_month.end(), 
-                out_sample_end_max.begin(), 
+                std::back_inserter(out_sample_ends), 
                 [in_sample_end](int months) {
                     return incrementDate(in_sample_end, 0, months);
                 });
