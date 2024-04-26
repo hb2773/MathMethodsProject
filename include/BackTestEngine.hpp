@@ -41,7 +41,8 @@ class BackTestEngine {
         unsigned long long end_date,
         bool recordStrat = false,
         std::string fileName = "../output/results.csv", 
-        std::vector<int> out_sample_lengths_in_month = {}) 
+        std::vector<int> out_sample_lengths_in_month = {}, 
+        int counter = -1) 
     {
         std::mutex mtx;
         std::vector<std::vector<float>> results;
@@ -80,9 +81,11 @@ class BackTestEngine {
             writeResultsToCSV(fileName, results);
         } else {
             for (auto out_sample_length_in_month : out_sample_lengths_in_month) {
-                std::string inSampleOutputFolder = fileName + "_OUTSAMP_" + std::to_string(out_sample_length_in_month) + "_/" + "insample/";
-                auto inSampleOutputFilename = inSampleOutputFolder + "INSAMPLE_START_" + std::to_string(start_date) + "_INSAMPLE_END_" + std::to_string(end_date) + ".csv";
-                writeResultsToCSV(inSampleOutputFilename, results);
+                if (execution_counter % out_sample_length_in_month == 0) {
+                    std::string inSampleOutputFolder = fileName + "_OUTSAMP_" + std::to_string(out_sample_length_in_month) + "_/" + "insample/";
+                    auto inSampleOutputFilename = inSampleOutputFolder + "INSAMPLE_START_" + std::to_string(start_date) + "_INSAMPLE_END_" + std::to_string(end_date) + ".csv";
+                    writeResultsToCSV(inSampleOutputFilename, results);
+                }
             }
         }
 

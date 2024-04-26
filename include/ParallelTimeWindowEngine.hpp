@@ -80,7 +80,7 @@ class ParallelTimeWindowEngine {
                 ChnLenMin, ChnLenMax, ChnLenStep, NumChnLen,
                 StpPctMin, StpPctMax, StpPctStep, NumStpPct,
                 in_sample_start, in_sample_end, 
-                false, outputFolder, out_sample_lengths_in_month);
+                false, outputFolder, out_sample_lengths_in_month, execution_counter);
 
             std::vector<int> out_sample_ends(out_sample_lengths_in_month.size());
             std::transform(
