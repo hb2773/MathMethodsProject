@@ -42,7 +42,7 @@ class BackTestEngine {
         bool recordStrat = false,
         std::string fileName = "../output/results.csv", 
         std::vector<int> out_sample_lengths_in_month = {}, 
-        int counter = -1) 
+        int execution_counter = -1) 
     {
         std::mutex mtx;
         std::vector<std::vector<float>> results;
