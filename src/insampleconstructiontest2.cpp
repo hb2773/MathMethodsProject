@@ -21,7 +21,7 @@
 int main () {
 
     // ASSET /////////////////////////////////////////////////////
-    const std::string ASSET = "XG-5minHLV";
+    const std::string ASSET = "XB-5minHLV";
     // SIZE 
     const int SIZE = 611'839;
 
@@ -38,13 +38,13 @@ int main () {
     const char* HHFilename_ = HHFilename.data();
     const char* LLFilename_ = LLFilename.data(); 
 
-    const int CHN_LEN_MIN = 10000; // 500
+    const int CHN_LEN_MIN = 500; // 500
     const int CHN_LEN_MAX = 10000; // 10000
-    const int CHN_LEN_STEP = 1000; // 10
+    const int CHN_LEN_STEP = 10; // 10
 
     const float STP_PCT_MIN = 0.05f; // 0.005
     const float STP_PCT_MAX = 0.1f; // 0.10
-    const float STP_PCT_STEP = 0.05f; // 0.001
+    const float STP_PCT_STEP = 0.001f; // 0.001
 
     const int NUM_CHN_LEN = static_cast<int>(std::ceil((CHN_LEN_MAX - CHN_LEN_MIN + CHN_LEN_STEP) / CHN_LEN_STEP));
     const int NUM_STP_PCT = static_cast<int>(std::ceil((STP_PCT_MAX - STP_PCT_MIN + STP_PCT_STEP) / STP_PCT_STEP));
@@ -79,8 +79,8 @@ int main () {
         false);
 
 
-    const unsigned long long start_date = 2001'1001'0000;
-    const unsigned long long end_date   = 2004'0401'0000;
+    const unsigned long long start_date = 2006'1101'0000;
+    const unsigned long long end_date   = 2023'1101'0000;
 
     const float tolerance = 0.001f;
 
