@@ -19,6 +19,8 @@ class ChannelBreakout {
     bool traded; // OK
     int n; // OK
     float prevClose; // OK
+    float prevHigh; // OK
+    float prevLow; // OK
 
     // CONSTANTS
     const float NUM_CONTRACTS; 
@@ -26,6 +28,7 @@ class ChannelBreakout {
     const float SLPG;
     const int ChnLen;
     const float StpPct;
+    const float tolerance;
 
     // EQ CURVE
     float equity; // OK
@@ -77,7 +80,51 @@ class ChannelBreakout {
         POINT_VALUE(POINT_VALUE), 
         SLPG(SLPG),
         ChnLen(ChnLen), 
-        StpPct(StpPct), 
+        StpPct(StpPct),
+        tolerance(0.), 
+
+        equity(INIT_EQUITY),
+        equityMax(INIT_EQUITY),
+
+        numTrades(0.),
+        numPositiveTrades(0.),
+        avgWinner(0.),
+        avgLooser(0.),
+
+        drawdown(0.),
+        maxDrawdown(0.),
+
+        delta(0.), 
+        deltaMean(0.),
+        deltaSum2_C(0.),
+        deltaSum3_C(0.),
+        deltaSum4_C(0.),
+        
+        buy(false), 
+        sell(false), 
+        benchmarkLong(0.), 
+        benchmarkShort(0.),
+
+        buyLong(false), 
+        sellShort(false)
+        
+        {};
+
+        ChannelBreakout(const float NUM_CONTRACTS, const float POINT_VALUE, const float SLPG, int ChnLen, float StpPct, float tolerance) : 
+
+        position(0.),
+        traded(false),
+        n(0),
+        prevClose(0.),
+        prevHigh(0.),
+        prevLow(0.),
+
+        NUM_CONTRACTS(NUM_CONTRACTS), 
+        POINT_VALUE(POINT_VALUE), 
+        SLPG(SLPG),
+        ChnLen(ChnLen), 
+        StpPct(StpPct),
+        tolerance(tolerance), 
 
         equity(INIT_EQUITY),
         equityMax(INIT_EQUITY),
@@ -225,6 +272,100 @@ class ChannelBreakout {
         prevClose = bar.close;
         return;
     }
+
+    void update2(const Bar& bar, float HH, float LL, const int counter) {
+        n += 1;
+        traded = false;
+
+        if (position == 0) {
+            if (prevHigh >= HH) {
+                if (HH <= bar.high && HH * (1 + tolerance) >= bar.low) {
+                    auto entryBuyPrice = std::min(HH * (1 + tolerance), bar.open);
+                    updateTrades(.5);
+                    position = 1;
+                    traded = true;
+                    benchmarkLong = prevHigh;
+                    delta = POINT_VALUE * (bar.close - entryBuyPrice);
+                }
+            } else if (prevLow <= LL) {
+                if (LL >= bar.low && LL * (1 - tolerance) <= bar.high) {
+                    auto entrySellPrice = std::max(LL * (1 - tolerance), bar.open);
+                    updateTrades(0.5);
+                    position = -1;
+                    traded = true;
+                    benchmarkShort = prevLow;
+                    delta = POINT_VALUE * (entrySellPrice - bar.close);
+                }
+            }
+        } 
+        else if (position == 1) {
+            if (prevLow <= benchmarkLong * (1 - StpPct)) {
+                updateTrades(0.5);
+                position = 0;
+                traded = true;
+                benchmarkShort = prevLow;
+                delta = POINT_VALUE * (bar.open - prevClose);
+            }
+            if (prevLow <= LL) {
+                if (LL >= bar.low && LL * (1 - tolerance) <= bar.high) {
+                    auto entrySellPrice = std::max(LL * (1 - tolerance), bar.open);
+                    updateTrades(0.5);
+                    position = -1;
+                    traded = true;
+                    benchmarkShort = std::min(prevLow, benchmarkShort);
+                    delta += POINT_VALUE * (entrySellPrice - bar.close);
+                }
+            }
+            benchmarkLong = std::max(prevHigh, benchmarkLong);
+        }
+        else if (position == -1) {
+            if (prevHigh >= benchmarkShort * (1 + StpPct)) {
+                updateTrades(0.5);
+                position = 0;
+                traded = true;
+                benchmarkLong = prevHigh;
+                delta = POINT_VALUE * (bar.open - prevClose);
+            }
+            if (prevHigh <= LL) {
+                if (HH <= bar.high && HH * (1 + tolerance) >= bar.low) {
+                    auto entryBuyPrice = std::min(HH * (1 + tolerance), bar.open);
+                    updateTrades(0.5);
+                    position = 1;
+                    traded = true;
+                    benchmarkLong = std::max(prevHigh, benchmarkLong);
+                    delta += POINT_VALUE * (bar.close - entryBuyPrice);
+                }
+            }
+            benchmarkShort = std::min(prevLow, benchmarkShort);
+        }
+        if (traded == false) {
+            delta = POINT_VALUE * (bar.close - prevClose) * position;
+        }
+
+        // Equity UPDATE  
+        equity += delta;
+        equityMax = std::max(equityMax, equity);
+        
+        // Drawdown UPDATE
+        drawdown = equity - equityMax;
+        maxDrawdown = std::min(drawdown, maxDrawdown);
+
+        // Delta Stat UPDATE
+        float deviation = delta - deltaMean;
+        float deviation_n = deviation / n;
+        float deviation_n2 = deviation_n * deviation_n;
+        float term1 = deviation * deviation_n * (n - 1);
+        deltaMean += deviation / n;
+        deltaSum4_C += term1 * deviation_n2 * (n * n - 3 * n + 3) + 6 * deviation_n2 * deltaSum2_C - 4 * deviation_n * deltaSum3_C;
+        deltaSum3_C += term1 * deviation_n * (n - 2) - 3 * deviation_n * deltaSum2_C;
+        deltaSum2_C += term1;
+
+        // State UPDATE
+        prevClose = bar.close;
+        prevHigh = bar.high;
+        prevLow = bar.low;
+        return;
+    }
 }; 
 
 class StrategyEngine {
@@ -253,6 +394,49 @@ class StrategyEngine {
                 continue;
             } else if (bar.timestamp < end_date) {
                 strat.update(bar, HHs.at(counter - 1), LLs.at(counter - 1), counter);
+                if (recordStrat) {
+                    recordStrategyEquity(strat, bar, stratResults);
+                }
+            } else {
+                // std::cout << std::endl;
+                // std::cout << "STRATEGY RUN " << std::endl;
+                // std::cout << "CHNL LENGTH  " << strat.ChnLen               << std::endl;
+                // std::cout << "STP PCT      " << strat.StpPct               << std::endl;
+                // std::cout << "PNL          " << strat.equity - INIT_EQUITY << std::endl;
+                // std::cout << "MAX DRAWDOWN " << strat.maxDrawdown          << std::endl;
+                // std::cout << "NUM TRADES   " << strat.numTrades            << std::endl;
+                // std::cout << "EQUITY MAX   " << strat.equityMax            << std::endl;
+                // std::cout << std::endl;
+                // TODO: OUTPUT IN A CSV FILE THE RESULTS OF THE STRATEGY
+                break;
+            }
+            
+        }
+        if (recordStrat) {
+            writeStratEquityResultsToCSV(outputFile, stratResults);
+        }
+    }
+
+    static void run2(
+        ChannelBreakout& strat, 
+        const std::vector<Bar>& bars, 
+        const std::vector<float>& HHs, 
+        const std::vector<float>& LLs, 
+        unsigned long long start_date, unsigned long long end_date,
+        bool recordStrat = false,
+        std::string outputFile = "../output/results2.csv") {
+        
+        std::vector<std::vector<float>> stratResults;
+        int counter = -1;
+        for (const auto& bar : bars) {
+            counter++;
+            if (counter < BARS_BACK || bar.timestamp < start_date) {
+                strat.prevClose = bar.close;
+                strat.prevHigh = bar.high;
+                strat.prevLow = bar.low;
+                continue;
+            } else if (bar.timestamp < end_date) {
+                strat.update2(bar, HHs.at(counter - 2), LLs.at(counter - 2), counter);
                 if (recordStrat) {
                     recordStrategyEquity(strat, bar, stratResults);
                 }

@@ -82,18 +82,21 @@ int main () {
     const unsigned long long start_date = 2001'1001'0000;
     const unsigned long long end_date   = 2004'0401'0000;
 
+    const float tolerance = 0.001f;
+
     const int in_sample_years = 1;
     const std::vector<int> out_sample_lengths_in_month = {1, 2, 3, 4, 5, 6};
 
     auto t1 = std::chrono::high_resolution_clock::now();
-    ParallelTimeWindowEngine::run(
+    ParallelTimeWindowEngine::run2(
         ASSET,
         start_date, end_date,
         in_sample_years,
         NUM_CONTRACTS, POINT_VALUE, SLPG, 
         bars, HHFilename_, LLFilename_, 
         CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, NUM_CHN_LEN,
-        STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, NUM_STP_PCT, 
+        STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, NUM_STP_PCT,
+        tolerance, 
         out_sample_lengths_in_month);
     auto t2 = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();

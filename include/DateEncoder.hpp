@@ -56,5 +56,18 @@ unsigned long long incrementDate(unsigned long long date, int addYears, int addM
 }
 
 
+unsigned long long decrementDate(unsigned long long date, int addYears, int addMonths) {
+
+    auto [year, month, day, hour, minute] = seperateDate(date);
+
+    year += addYears;
+    int month_temp = month + addMonths;
+    year += (month_temp - 1) / 12; 
+    month = (month_temp - 1) % 12 + 1; 
+
+    unsigned long long newDate = year * 1'00'00'00'00ULL + month * 1'00'00'00 + day * 1'00'00 + hour * 1'00 + minute;
+    return newDate;
+}
+
 
 #endif

@@ -8,6 +8,9 @@
 #include <climits>
 #include <map>
 #include <span>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 #include "BackTestEngine.hpp"
 #include "DataReader.hpp"
@@ -49,7 +52,7 @@ int main() {
     const char* HHFilename_ = HHFilename.data();
     const char* LLFilename_ = LLFilename.data(); 
 
-    const int CHN_LEN_MIN = 10000; // 500
+    const int CHN_LEN_MIN = 500; // 500
     const int CHN_LEN_MAX = 10000; // 10000
     const int CHN_LEN_STEP = 1000; // 10
 
@@ -103,20 +106,34 @@ int main() {
         false);
 
     // Need to do a for auto start_date
-    unsigned long long start_date = 2007'1002'0000;
-    unsigned long long end_date   = 2017'1001'0000;
+    unsigned long long start_date = 1990'1001'0000;
+    unsigned long long end_date   = 2023'1001'0000;
     bool recordStrat = true;
 
+    std::string outputFolder = "../" + ASSET + "FULL_INSAMP_FULL_OUTSAMP_/";
+
+    if (!fs::exists(outputFolder)) {
+        fs::create_directories(outputFolder);
+    }
+
+    auto inSampleFileName =  outputFolder + "INSAMPLE_START_" + std::to_string(start_date) + "_INSAMPLE_END_" + std::to_string(end_date) + ".csv";
+    auto outSampleFileName = outputFolder + "OUTSAMPLE_START_" + std::to_string(start_date) + "_OUTSAMPLE_END_" + std::to_string(end_date) + ".csv";
+
     auto t1 = std::chrono::high_resolution_clock::now();
-    BackTestEngine::run(
+    auto [optChn, optStp] = BackTestEngine::run(
         NUM_CONTRACTS, POINT_VALUE, SLPG, 
         bars, HHFilename_, LLFilename_, 
         CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, NUM_CHN_LEN,
         STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, NUM_STP_PCT,
         start_date, end_date,
-        recordStrat);
+        recordStrat, inSampleFileName);
     auto t2 = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+
+    ChannelBreakout strat = ChannelBreakout(NUM_CONTRACTS, POINT_VALUE, SLPG, optChn, optStp);
+    auto HHs = MinMaxSlidingWindow(highs, optChn, true);
+    auto LLs = MinMaxSlidingWindow(lows, optStp, false);
+    StrategyEngine::run(strat, bars, HHs, LLs, start_date, end_date, true, outSampleFileName);
 
     // ChannelBreakout strat1 = ChannelBreakout(chnLen, 0.015);
     // ChannelBreakout strat2 = ChannelBreakout(chnLen, 0.016);
