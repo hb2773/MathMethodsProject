@@ -10,7 +10,7 @@
 
 namespace fs = std::filesystem;
 
-class ParallelTimeWindowEngine {
+class ParallelTimeWindowEngineFromReading {
     public: 
     static void run(
         const std::string asset,

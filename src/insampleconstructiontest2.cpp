@@ -42,7 +42,7 @@ int main () {
     const int CHN_LEN_MAX = 10000; // 10000
     const int CHN_LEN_STEP = 10; // 10
 
-    const float STP_PCT_MIN = 0.05f; // 0.005
+    const float STP_PCT_MIN = 0.005f; // 0.005
     const float STP_PCT_MAX = 0.1f; // 0.10
     const float STP_PCT_STEP = 0.001f; // 0.001
 
@@ -88,7 +88,7 @@ int main () {
     const std::vector<int> out_sample_lengths_in_month = {1, 2, 3, 4, 5, 6};
 
     auto t1 = std::chrono::high_resolution_clock::now();
-    ParallelTimeWindowEngine::run2(
+    ParallelTimeWindowEngine::run(
         ASSET,
         start_date, end_date,
         in_sample_years,
@@ -96,7 +96,6 @@ int main () {
         bars, HHFilename_, LLFilename_, 
         CHN_LEN_MIN, CHN_LEN_MAX, CHN_LEN_STEP, NUM_CHN_LEN,
         STP_PCT_MIN, STP_PCT_MAX, STP_PCT_STEP, NUM_STP_PCT,
-        tolerance, 
         out_sample_lengths_in_month);
     auto t2 = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
